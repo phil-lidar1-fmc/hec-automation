@@ -40,9 +40,10 @@ import traceback
 import urllib2
 import main_control
 
-_version = '2.10.4'
+_version = '2.11.1'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
+_logger.handlers.pop()
 # _PREDICT_CSV_FIELDS = {'rainfall': 'rain_value(mm)',
 #                        'waterlevel': 'waterlevel(m)'}
 _PREDICT_CSV_FIELDS = {'rainfall': 'rain_value(mm)',

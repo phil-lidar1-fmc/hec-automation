@@ -1,8 +1,8 @@
 @echo off
-set INSTALL_PATH=C:\Documents and Settings\hmsrasauto-admin\My Documents\Dropbox
-set JAVA_PATH=C:\Documents and Settings\hmsrasauto-admin\My Documents\Dropbox\jre1.8.0
-set HEC_DSSVUE_PATH=C:\Program Files\HEC\HEC-DSSVue
-set JYTHON_PATH=C:\jython2.7b2
+set INSTALL_PATH=C:\hec-automation
+set JAVA_PATH=C:\Program Files (x86)\Java\jre1.8.0_102
+set HEC_DSSVUE_PATH=C:\Program Files (x86)\HEC\HEC-DSSVue
+set JYTHON_PATH=C:\jython2.7.0
 set DSS_HANDLER_PATH=%INSTALL_PATH%\dss_handler
 
 ::cd "%DSS_HANDLER_PATH%"

@@ -1,16 +1,13 @@
 @echo off
 
-rem set INSTALL_PATH=C:\Documents and Settings\hmsrasauto-admin\My Documents\Dropbox
-set INSTALL_PATH=Z:\
+set INSTALL_PATH=C:\hec-automation
 set PYTHON_EXE_PATH=C:\Python27\python.exe
 set HEC_TOOLS_PATH=%INSTALL_PATH%\hec_tools
 set PYTHONPATH=%INSTALL_PATH%\hec_tools;%INSTALL_PATH%\dss_handler
 
 echo.
 echo Emptying temporary directories...
-set CWD=%cd%
-call "%INSTALL_PATH%\temp_cleanup.bat"
-cd %CWD%
+del /q/f/s %TEMP%\*
 
 echo.
 echo Starting main_control.py...

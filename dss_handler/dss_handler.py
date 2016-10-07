@@ -34,12 +34,10 @@ import os.path as op
 import pickle
 import sys
 
-_version = '2.02'
+_version = '2.3.2'
 _logger = logging.getLogger()
 _LOG_LEVEL = logging.DEBUG
-#_CONS_LOG_LEVEL = logging.WARNING
 _CONS_LOG_LEVEL = logging.INFO
-#_CONS_LOG_LEVEL = logging.DEBUG
 _FILE_LOG_LEVEL = logging.DEBUG
 _DSS_BEGIN = datetime(1899, 12, 31)
 
@@ -82,20 +80,25 @@ def _write_dss_from_csv():
         # Get list of times and respective values
         times = []
         values = []
-        key = datetime.strptime(start.dateAndTime(), '%d %B %Y, %H:%M')
         last_time = None
+        key = datetime.strptime(start.dateAndTime().replace('24:00','0:00') , '%d %B %Y, %H:%M')
         while key <= end_time:
             value = v.pop(key, 'NO_DATA')
+            _logger.debug('%s: %s', key, value)
             if value != 'NO_DATA':
                 times.append(start.value())
                 values.append(value)
                 last_time = key
             start.add(tsc.interval)
-            key = datetime.strptime(start.dateAndTime(), '%d %B %Y, %H:%M')
+            key = datetime.strptime(start.dateAndTime().replace('24:00','0:00') , '%d %B %Y, %H:%M')
+        times.append(start.value())
+        values.append(0.)
         # Set list of times, values, and size of list
         tsc.times = times
         tsc.values = values
         tsc.numberValues = len(values)
+        _logger.debug('tsc.times: %s', tsc.times)
+        _logger.debug('tsc.values: %s', tsc.values)
         # Set units
         tsc.units = raw_data['units']
         # Set type

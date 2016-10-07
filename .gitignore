@@ -1,5 +1,11 @@
-/cache/*
+*.pyc
+*.log
+/cache/repo.pscigrid.gov.ph/*
+/charts/*
+!/charts/js*
 /installers/*
+/json/*
+/kmz/*
 /log/*
 /models/HEC-HMS/*
 /models/HEC-RAS/*

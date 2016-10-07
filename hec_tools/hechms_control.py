@@ -43,7 +43,7 @@ import json
 import main_control
 import pprint
 
-_version = '2.18.15'
+_version = '2.19.1'
 print(os.path.basename(__file__) + ': v' + _version)
 np.seterr(all='raise')
 _logger = logging.getLogger()
@@ -1137,7 +1137,7 @@ def _apply_tidal_correction(disc_gage, interval):
     _logger.debug('wl_def = %s', wl_def)
     _logger.debug('wl_xml = %s', wl_xml)
     _logger.info('Running TAPPY analysis...')
-    tappya = subprocess.call(['tappy', 'analysis', wl_actual,
+    tappya = subprocess.call(['tappy.py', 'analysis', wl_actual,
                               '--def_filename', wl_def, '--outputxml', wl_xml],
                              shell=True)
     if tappya != 0:

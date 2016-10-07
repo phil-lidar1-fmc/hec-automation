@@ -1,6 +1,7 @@
 @echo off
 
-set BIN=C:\Documents and Settings\hmsrasauto-admin\My Documents\Dropbox\hec_tools
+set BIN=C:\hec-automation\hec_tools
+set CONF=C:\hec-automation\conf
 
 echo Running automation system...
-call "%BIN%\main_control.bat" PASSI.conf
+call "%BIN%\main_control.bat" "%CONF%\CDO.conf"

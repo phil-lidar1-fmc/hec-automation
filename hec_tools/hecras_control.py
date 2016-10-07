@@ -41,7 +41,7 @@ import shutil
 import subprocess
 import time
 
-_version = '2.20.4'
+_version = '2.21.1'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
 _TIMEOUT = 1800  # seconds
@@ -170,16 +170,20 @@ def run_hecras():
         unsteady_flow_window.Close()
         # Run RAS Mapper
         _logger.info('Running RAS Mapper...')
-        pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
+        pwa.timings.WaitUntilPasses(_TIMEOUT, 1,
                                     lambda: hecras_window.MenuItem('&GIS Tools->RAS Mapper ...').Click())
-        ras_mapper_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
+        ras_mapper_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 2,
                                                         lambda: app.window_(title='RAS Mapper'))
         # Run Floodplain Mapping
         _logger.info('Running Floodplain Mapping...')
-        pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
-                                    lambda: ras_mapper_window['MenuStrip1'].TypeKeys('%t'))
-        ras_mapper_window['MenuStrip1'].TypeKeys('f')
-        flood_map_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
+        time.sleep(2)
+        _logger.info('alt+t')
+        ras_mapper_window['MenuStrip1'].TypeKeys('%tf')
+        time.sleep(2)
+        # _logger.info('f')
+        # ras_mapper_window['MenuStrip1'].TypeKeys('f')
+        # time.sleep(2)
+        flood_map_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 2,
                                                        lambda: app.window_(title='Floodplain Mapping'))
         # Select Max WS and current time under Profiles
         _logger.info('Selecting Max WS and current time under Profiles...')
@@ -192,28 +196,29 @@ def run_hecras():
         time.sleep(.5)
         flood_map_window['ListBox2'].Select(1)
         time.sleep(.5)
-        flood_map_window['ListBox2'].Select(2)
-        time.sleep(.5)
-        flood_map_window['ListBox2'].Select(3)
-        time.sleep(.5)
-        flood_map_window['ListBox2'].Select(4)
-        time.sleep(.5)
-        flood_map_window['ListBox2'].Select(5)
-        time.sleep(.5)
-        flood_map_window['ListBox2'].Select(6)
-        time.sleep(.5)
-        # Select Water Surface Elevation under Variables
-        _logger.info('Selecting Water Surface Elevation under Variables...')
-        flood_map_window['All'].Click()
-        time.sleep(.5)
-        flood_map_window['All'].Click()
-        time.sleep(.5)
-        flood_map_window['ListBox'].Select(0)
-        time.sleep(.5)
+        # flood_map_window['ListBox2'].Select(2)
+        # time.sleep(.5)
+        # flood_map_window['ListBox2'].Select(3)
+        # time.sleep(.5)
+        # flood_map_window['ListBox2'].Select(4)
+        # time.sleep(.5)
+        # flood_map_window['ListBox2'].Select(5)
+        # time.sleep(.5)
+        # flood_map_window['ListBox2'].Select(6)
+        # time.sleep(.5)
+        # # Select Water Surface Elevation under Variables
+        # _logger.info('Selecting Water Surface Elevation under Variables...')
+        # flood_map_window['All'].Click()
+        # time.sleep(.5)
+        # # flood_map_window['All'].Click()
+        # # time.sleep(.5)
+        # flood_map_window['ListBox'].Select(0)
+        # time.sleep(.5)
         flood_map_window['Button7'].Click()
+        time.sleep(.5)
         # Wait for layer generation to finish
         _logger.info('Waiting for layer generation to finish...')
-        pwa.timings.WaitUntilPasses(_TIMEOUT, 0.1,
+        pwa.timings.WaitUntilPasses(_TIMEOUT, 2,
                                     lambda: pwa.findwindows.find_windows(title=u'RAS Mapper',
                                                                          class_name='#32770')[0])
         ras_mapper_dialog = app.top_window_()
