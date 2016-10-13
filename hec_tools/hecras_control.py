@@ -41,7 +41,7 @@ import shutil
 import subprocess
 import time
 
-_version = '2.21.1'
+_version = '2.22.1'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
 _TIMEOUT = 1800  # seconds
@@ -153,18 +153,21 @@ def run_hecras():
         app = pwa.Application()
         hecras_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
                                                     lambda: app.window_(title='HEC-RAS 4.1.0'))
+        hecras_window.SetFocus()
         # Run unsteady flow analysis
         _logger.info('Running unsteady flow analysis...')
         pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
                                     lambda: hecras_window.MenuItem('&Run->&Unsteady Flow Analysis ...').Click())
         unsteady_flow_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
                                                            lambda: app.window_(title='Unsteady Flow Analysis'))
+        unsteady_flow_window.SetFocus()
         pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
                                     lambda: unsteady_flow_window['Compute'].Click())
         # Wait for computation to finish
         _logger.info('Waiting for computation to finish...')
         hecras_comps_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
                                                           lambda: app.window_(title='HEC-RAS Finished Computations'))
+        hecras_comps_window.SetFocus()
         pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
                                     lambda: hecras_comps_window['Close'].Click())
         unsteady_flow_window.Close()
@@ -174,17 +177,15 @@ def run_hecras():
                                     lambda: hecras_window.MenuItem('&GIS Tools->RAS Mapper ...').Click())
         ras_mapper_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 2,
                                                         lambda: app.window_(title='RAS Mapper'))
+        ras_mapper_window.SetFocus()
         # Run Floodplain Mapping
         _logger.info('Running Floodplain Mapping...')
         time.sleep(2)
-        _logger.info('alt+t')
         ras_mapper_window['MenuStrip1'].TypeKeys('%tf')
         time.sleep(2)
-        # _logger.info('f')
-        # ras_mapper_window['MenuStrip1'].TypeKeys('f')
-        # time.sleep(2)
         flood_map_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 2,
                                                        lambda: app.window_(title='Floodplain Mapping'))
+        flood_map_window.SetFocus()
         # Select Max WS and current time under Profiles
         _logger.info('Selecting Max WS and current time under Profiles...')
         pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
