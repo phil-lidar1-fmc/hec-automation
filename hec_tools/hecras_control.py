@@ -41,7 +41,7 @@ import shutil
 import subprocess
 import time
 
-_version = '2.22.1'
+_version = '2.23'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
 _TIMEOUT = 1800  # seconds
@@ -527,9 +527,7 @@ def shp2kmz(current_time):
                 filename_head = filename_base + '-max-rivermap.'
 
             else:
-                filename_head = filename_base + \
-                    str(sorted(os.listdir(_HECRAS_CONFIG.flood_map_dir)).index(
-                        content)) + '-cur-rivermap.'
+                filename_head = filename_base + '-cur-rivermap.'
             _logger.debug('filename_head = %s', filename_head)
             # Get kmz path
             kmz = op.realpath(op.join(_HECRAS_CONFIG.kmz_output_dir,
