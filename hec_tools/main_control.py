@@ -34,10 +34,11 @@ import numpy.random
 import os
 import os.path as op
 import repo_handler
+import subprocess
 import sys
 import time
 
-_version = '2.22.2'
+_version = '2.23'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
 _LOG_LEVEL = logging.DEBUG
@@ -48,6 +49,12 @@ _HECHMS_CONFIG = None
 _HECRAS_CONFIG = None
 # _MAX_ERRORS = 30
 _cur_errors = 0
+
+# Add required binaries default paths to PATH environment variable
+default_paths = ['C:\\OSGeo4W64\\bin',
+                 'C:\\cygwin64\\bin']
+os.environ['PATH'] = (os.pathsep.join(default_paths) +
+                      os.pathsep + os.environ['PATH'])
 
 MainConfig = collections.namedtuple('MainConfig',
                                     ['install_dir',
@@ -945,13 +952,15 @@ if __name__ == '__main__':
         try:
             # process_start = datetime.now()
             # _logger.info('process_start = %s', process_start)
-            # _logger.info('_MAIN_CONFIG.run_hechms = %s', _MAIN_CONFIG.run_hechms)
+            # _logger.info('_MAIN_CONFIG.run_hechms = %s',
+            # _MAIN_CONFIG.run_hechms)
             if _MAIN_CONFIG.run_hechms:
                 # Run hechms_control
                 exported_dss = hechms_control.hechms_control(current_time,
                                                              _MAIN_CONFIG,
                                                              _HECHMS_CONFIG)
-            # _logger.info('_MAIN_CONFIG.run_hecras = %s', _MAIN_CONFIG.run_hecras)
+            # _logger.info('_MAIN_CONFIG.run_hecras = %s',
+            # _MAIN_CONFIG.run_hecras)
             if _MAIN_CONFIG.run_hecras:
                 # Run hecras_control for each exported dss file
                 for base_series, series_info in exported_dss.items():
@@ -965,10 +974,34 @@ if __name__ == '__main__':
                     break
             # process_end = datetime.now()
             # _logger.info('process_end = %s', process_end)
-            # _logger.info('process_duration = %s', process_end - process_start)
+            # _logger.info('process_duration = %s', process_end -
+            # process_start)
         except Exception as e:
             _logger.exception(e)
             _logger.error('Trying again in the next iteration.')
+        # Rsync output to website
+        try:
+            subprocess.check_call(['rsync.exe', '-ainPS',
+                                   os.path.join(_MAIN_CONFIG.install_dir,
+                                                'charts') + os.sep + '*.html',
+                                   'hmsrasauto-admin@website.dmz.dream.upd.edu.\
+ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/charts/'],
+                                  shell=True)
+            subprocess.check_call(['rsync.exe', '-ainPS',
+                                   os.path.join(_MAIN_CONFIG.install_dir,
+                                                'json') + os.sep + '*.json',
+                                   'hmsrasauto-admin@website.dmz.dream.upd.edu.\
+ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/json/'],
+                                  shell=True)
+            subprocess.check_call(['rsync.exe', '-ainPS',
+                                   os.path.join(_MAIN_CONFIG.install_dir,
+                                                'kmz') + os.sep,
+                                   'hmsrasauto-admin@website.dmz.dream.upd.edu.\
+ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/kmz/'],
+                                  shell=True)
+        except subprocess.CalledProcessError:
+            import traceback
+            traceback.print_exc()
         # If run once is enabled break immediately
         if _MAIN_CONFIG.run_once:
             _logger.info('Run once enabled! Breaking loop.')
