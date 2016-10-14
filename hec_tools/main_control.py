@@ -986,12 +986,12 @@ if __name__ == '__main__':
                 _MAIN_CONFIG.install_dir.replace(
                     '\\', '/').replace('C:', 'c') + '/'
             subprocess.check_call(['rsync.exe', '-ainPS', install_dir_unix +
-                                   '*.html',
+                                   'charts/*.html',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/charts/'],
                                   shell=True)
             subprocess.check_call(['rsync.exe', '-ainPS', install_dir_unix +
-                                   '*.json',
+                                   'json/*.json',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/json/'],
                                   shell=True)
