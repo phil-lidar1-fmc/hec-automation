@@ -988,17 +988,17 @@ if __name__ == '__main__':
             subprocess.check_call(['rsync.exe', '-aiPS', install_dir_unix +
                                    'charts/*.html',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
-ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/charts/'],
+ph:/srv/www/www.dream.upd.edu.ph/hectools/charts/'],
                                   shell=True)
             subprocess.check_call(['rsync.exe', '-aiPS', install_dir_unix +
                                    'json/*.json',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
-ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/json/'],
+ph:/srv/www/www.dream.upd.edu.ph/hectools/json/'],
                                   shell=True)
             subprocess.check_call(['rsync.exe', '-aiPS', install_dir_unix +
                                    'kmz/',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
-ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/kmz/'],
+ph:/srv/www/www.dream.upd.edu.ph/hectools/kmz/'],
                                   shell=True)
         except subprocess.CalledProcessError:
             import traceback
