@@ -981,21 +981,22 @@ if __name__ == '__main__':
             _logger.error('Trying again in the next iteration.')
         # Rsync output to website
         try:
-            subprocess.check_call(['rsync.exe', '-ainPS',
-                                   os.path.join(_MAIN_CONFIG.install_dir,
-                                                'charts') + os.sep + '*.html',
+            _logger.info('Rsyncing output to website server...')
+            install_dir_unix = '/cygdrive/' + \
+                _MAIN_CONFIG.install_dir.replace(
+                    '\\', '/').replace('C:', 'c') + '/'
+            subprocess.check_call(['rsync.exe', '-ainPS', install_dir_unix +
+                                   '*.html',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/charts/'],
                                   shell=True)
-            subprocess.check_call(['rsync.exe', '-ainPS',
-                                   os.path.join(_MAIN_CONFIG.install_dir,
-                                                'json') + os.sep + '*.json',
+            subprocess.check_call(['rsync.exe', '-ainPS', install_dir_unix +
+                                   '*.json',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/json/'],
                                   shell=True)
-            subprocess.check_call(['rsync.exe', '-ainPS',
-                                   os.path.join(_MAIN_CONFIG.install_dir,
-                                                'kmz') + os.sep,
+            subprocess.check_call(['rsync.exe', '-ainPS', install_dir_unix +
+                                   'kmz',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/kmz/'],
                                   shell=True)
