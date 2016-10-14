@@ -985,17 +985,17 @@ if __name__ == '__main__':
             install_dir_unix = '/cygdrive/' + \
                 _MAIN_CONFIG.install_dir.replace(
                     '\\', '/').replace('C:', 'c') + '/'
-            subprocess.check_call(['rsync.exe', '-ainPS', install_dir_unix +
-                                   '*.html',
+            subprocess.check_call(['rsync.exe', '-aiPS', install_dir_unix +
+                                   'charts/*.html',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/charts/'],
                                   shell=True)
-            subprocess.check_call(['rsync.exe', '-ainPS', install_dir_unix +
-                                   '*.json',
+            subprocess.check_call(['rsync.exe', '-aiPS', install_dir_unix +
+                                   'json/*.json',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/json/'],
                                   shell=True)
-            subprocess.check_call(['rsync.exe', '-ainPS', install_dir_unix +
+            subprocess.check_call(['rsync.exe', '-aiPS', install_dir_unix +
                                    'kmz',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/kmz/'],
