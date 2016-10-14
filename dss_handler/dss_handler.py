@@ -34,7 +34,7 @@ import os.path as op
 import pickle
 import sys
 
-_version = '2.3.2'
+_version = '2.4'
 _logger = logging.getLogger()
 _LOG_LEVEL = logging.DEBUG
 _CONS_LOG_LEVEL = logging.INFO
@@ -81,7 +81,8 @@ def _write_dss_from_csv():
         times = []
         values = []
         last_time = None
-        key = datetime.strptime(start.dateAndTime().replace('24:00','0:00') , '%d %B %Y, %H:%M')
+        key = datetime.strptime(start.dateAndTime().replace(
+            '24:00', '0:00'), '%d %B %Y, %H:%M')
         while key <= end_time:
             value = v.pop(key, 'NO_DATA')
             _logger.debug('%s: %s', key, value)
@@ -90,7 +91,8 @@ def _write_dss_from_csv():
                 values.append(value)
                 last_time = key
             start.add(tsc.interval)
-            key = datetime.strptime(start.dateAndTime().replace('24:00','0:00') , '%d %B %Y, %H:%M')
+            key = datetime.strptime(start.dateAndTime().replace(
+                '24:00', '0:00'), '%d %B %Y, %H:%M')
         times.append(start.value())
         values.append(0.)
         # Set list of times, values, and size of list
@@ -185,7 +187,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--source', choices=['csv', 'dss'])
     parser.add_argument('-if', '--input_file')
     args = parser.parse_args()
-    ## Initialize logging
+    # Initialize logging
     _logger.setLevel(_LOG_LEVEL)
 #    formatter = logging.Formatter('[%(asctime)s] %(filename)s\t: %(message)s')
     formatter = logging.Formatter('[%(asctime)s] %(filename)s \
@@ -196,8 +198,7 @@ if __name__ == '__main__':
     ch.setLevel(_CONS_LOG_LEVEL)
     ch.setFormatter(formatter)
     _logger.addHandler(ch)
-    fh = logging.handlers.RotatingFileHandler(op.join('log', 'dss_handler.log'),
-                                              maxBytes=2097152, backupCount=5)
+    fh = logging.FileHandler(op.join('log', 'dss_handler.log'), mode='w')
     fh.setLevel(_FILE_LOG_LEVEL)
     fh.setFormatter(formatter)
     _logger.addHandler(fh)

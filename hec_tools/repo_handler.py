@@ -40,7 +40,7 @@ import traceback
 import urllib2
 import main_control
 
-_version = '2.11.1'
+_version = '2.12'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
 _logger.handlers.pop()
@@ -88,9 +88,11 @@ def dss_handler(dss_handler_in, opts, _MAIN_CONFIG):
     command += ['-if', input_file]
     _logger.debug('command = %s', command)
     # Run dss_handler
-    dss_handler = subprocess.call(command)
-    if dss_handler != 0:
-        _logger.error('Error while writing/reading to/from dss! Exiting.')
+    try:
+        subprocess.check_call(command)
+    except subprocess.CalledProcessError as e:
+        _logger.exception('Error while writing/reading to/from dss! Exiting.')
+        _logger.error('e.output: %s', e.output)
         exit(1)
     # # Return to current path
     # os.chdir(current_path)

@@ -41,10 +41,10 @@ import shutil
 import subprocess
 import time
 
-_version = '2.23'
+_version = '2.25'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
-_TIMEOUT = 1800  # seconds
+_PWA_TIMEOUT = 180  # seconds
 _DEVNULL = open(os.devnull, 'w')
 
 
@@ -146,322 +146,78 @@ def run_hecras():
     _logger.info('Launching HEC-RAS...')
     hecras = subprocess.Popen([_MAIN_CONFIG.hecras_exe,
                                _HECRAS_CONFIG.hecras_proj_file])
-    time.sleep(3)
     try:
         # Use pywinauto to control HEC-RAS gui
         _logger.info('Using pywinauto to control HEC-RAS gui...')
         app = pwa.Application()
-        hecras_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
+        hecras_window = pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
                                                     lambda: app.window_(title='HEC-RAS 4.1.0'))
-        hecras_window.SetFocus()
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
+                                    lambda: hecras_window.SetFocus())
         # Run unsteady flow analysis
         _logger.info('Running unsteady flow analysis...')
-        pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
                                     lambda: hecras_window.MenuItem('&Run->&Unsteady Flow Analysis ...').Click())
-        unsteady_flow_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
+        unsteady_flow_window = pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
                                                            lambda: app.window_(title='Unsteady Flow Analysis'))
-        unsteady_flow_window.SetFocus()
-        pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
+                                    lambda: unsteady_flow_window.SetFocus())
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
                                     lambda: unsteady_flow_window['Compute'].Click())
         # Wait for computation to finish
         _logger.info('Waiting for computation to finish...')
-        hecras_comps_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
+        hecras_comps_window = pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
                                                           lambda: app.window_(title='HEC-RAS Finished Computations'))
-        hecras_comps_window.SetFocus()
-        pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
+                                    lambda:  hecras_comps_window.SetFocus())
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
                                     lambda: hecras_comps_window['Close'].Click())
-        unsteady_flow_window.Close()
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
+                                    lambda:  unsteady_flow_window.Close())
         # Run RAS Mapper
         _logger.info('Running RAS Mapper...')
-        pwa.timings.WaitUntilPasses(_TIMEOUT, 1,
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 1,
                                     lambda: hecras_window.MenuItem('&GIS Tools->RAS Mapper ...').Click())
-        ras_mapper_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 2,
+        ras_mapper_window = pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
                                                         lambda: app.window_(title='RAS Mapper'))
-        ras_mapper_window.SetFocus()
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
+                                    lambda:  ras_mapper_window.SetFocus())
         # Run Floodplain Mapping
         _logger.info('Running Floodplain Mapping...')
-        time.sleep(2)
-        ras_mapper_window['MenuStrip1'].TypeKeys('%tf')
-        time.sleep(2)
-        flood_map_window = pwa.timings.WaitUntilPasses(_TIMEOUT, 2,
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
+                                    lambda:  ras_mapper_window['MenuStrip1'].TypeKeys('%tf'))
+        flood_map_window = pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
                                                        lambda: app.window_(title='Floodplain Mapping'))
-        flood_map_window.SetFocus()
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
+                                    lambda:  flood_map_window.SetFocus())
         # Select Max WS and current time under Profiles
         _logger.info('Selecting Max WS and current time under Profiles...')
-        pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5,
-                                    lambda: flood_map_window['All2'].Click())
-        time.sleep(.5)
-        flood_map_window['All2'].Click()
-        time.sleep(.5)
-        flood_map_window['ListBox2'].Select(0)
-        time.sleep(.5)
-        flood_map_window['ListBox2'].Select(1)
-        time.sleep(.5)
-        # flood_map_window['ListBox2'].Select(2)
-        # time.sleep(.5)
-        # flood_map_window['ListBox2'].Select(3)
-        # time.sleep(.5)
-        # flood_map_window['ListBox2'].Select(4)
-        # time.sleep(.5)
-        # flood_map_window['ListBox2'].Select(5)
-        # time.sleep(.5)
-        # flood_map_window['ListBox2'].Select(6)
-        # time.sleep(.5)
-        # # Select Water Surface Elevation under Variables
-        # _logger.info('Selecting Water Surface Elevation under Variables...')
-        # flood_map_window['All'].Click()
-        # time.sleep(.5)
-        # # flood_map_window['All'].Click()
-        # # time.sleep(.5)
-        # flood_map_window['ListBox'].Select(0)
-        # time.sleep(.5)
-        flood_map_window['Button7'].Click()
-        time.sleep(.5)
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 0.5,
+                                    lambda: flood_map_window['ListBox2'].Select(1))
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 2,
+                                    lambda: flood_map_window['Button7'].Click())
         # Wait for layer generation to finish
         _logger.info('Waiting for layer generation to finish...')
-        pwa.timings.WaitUntilPasses(_TIMEOUT, 2,
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 2,
                                     lambda: pwa.findwindows.find_windows(title=u'RAS Mapper',
                                                                          class_name='#32770')[0])
-        ras_mapper_dialog = app.top_window_()
-        ras_mapper_dialog.SetFocus()
-        ras_mapper_dialog['OK'].Click()
-    except Exception:
+        ras_mapper_dialog = pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 2,
+                                                        lambda: app.top_window_())
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 2,
+                                    lambda: ras_mapper_dialog.SetFocus())
+        pwa.timings.WaitUntilPasses(_PWA_TIMEOUT, 2,
+                                    lambda: ras_mapper_dialog['OK'].Click())
+    except Exception as e:
         # Restart Windows
-        _logger.info('Restarting Windows...')
-        subprocess.call(['shutdown', '/r'])
+        # _logger.info('Restarting Windows...')
+        # subprocess.call(['shutdown', '/r'])
+        _logger.exception('Error running HEC-RAS!')
+        exit(1)
     finally:
         # Terminate HEC-RAS
         _logger.info('Terminating HEC-RAS...')
         hecras.terminate()
         time.sleep(.5)
-
-
-def run_hecras2():
-    # _logger.setLevel(logging.WARN)
-    # Launch HEC-RAS
-    cmd = _MAIN_CONFIG.hecras_exe + ' ' + _HECRAS_CONFIG.hecras_proj_file
-
-    def _start_hecras():
-        return pwa.Application.start(cmd)
-    _logger.info('Launching HEC-RAS... %s', cmd)
-    app = pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _start_hecras)
-    time.sleep(5)
-
-    def _set_hecras_window():
-        return app.window_(title='HEC-RAS 4.1.0')
-    _logger.info('Setting HEC-RAS window...')
-    hecras_window = pwa.timings.WaitUntilPasses(
-        _TIMEOUT, 0.5, _set_hecras_window)
-    _logger.info('hecras_window.Texts() = %s', hecras_window.Texts())
-    time.sleep(.5)
-
-    def _hecras_restore():
-        return hecras_window.SetFocus()
-    _logger.info('Restoring HEC-RAS window...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _hecras_restore)
-    time.sleep(.5)
-
-    def _run_unsteady():
-        return hecras_window.MenuItem('&Run->&Unsteady Flow Analysis ...').Click()
-    # Run unsteady flow analysis
-    _logger.info('Running unsteady flow analysis...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _run_unsteady)
-    # _run_unsteady()
-    time.sleep(.5)
-
-    def _find_unsteady_window():
-        # return app.window_(title='Unsteady Flow Analysis')
-        return pwa.findwindows.find_windows(title='Unsteady Flow Analysis')[0]
-    _logger.info('Finding Unsteady Flow window...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _find_unsteady_window)
-    time.sleep(.5)
-
-    def _set_unsteady_window():
-        return app.window_(title='Unsteady Flow Analysis')
-    _logger.info('Setting Unsteady Flow window...')
-    unsteady_flow_window = pwa.timings.WaitUntilPasses(
-        _TIMEOUT, 0.5, _set_unsteady_window)
-    _logger.info(
-        'unsteady_flow_window.Texts() = %s', unsteady_flow_window.Texts())
-    time.sleep(.5)
-
-    def _unsteady_compute():
-        return unsteady_flow_window['Compute'].ClickInput()
-    _logger.info('Starting unsteady flow computation...')
-    # pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _unsteady_compute)
-    _unsteady_compute()
-    time.sleep(.5)
-
-    def _find_fin_window():
-        # app.window_(title='HEC-RAS Finished Computations')
-        return pwa.findwindows.find_windows(
-            title='HEC-RAS Finished Computations')[0]
-    # Wait for computation to finish
-    _logger.info('Waiting for computation to finish...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _find_fin_window)
-    time.sleep(.5)
-
-    def _set_fin_window():
-        return app.window_(title='HEC-RAS Finished Computations')
-    _logger.info('Setting finished computations window...')
-    hecras_comps_window = pwa.timings.WaitUntilPasses(
-        _TIMEOUT, 0.5, _set_fin_window)
-    _logger.info(
-        'hecras_comps_window.Texts() = %s', hecras_comps_window.Texts())
-    time.sleep(.5)
-
-    def _close_comp_fin():
-        # hecras_comps_window['Close'].Click()
-        return hecras_comps_window.Close()
-    _logger.info('Closing computation finished window...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _close_comp_fin)
-    time.sleep(.5)
-
-    def _close_unsteady():
-        return unsteady_flow_window.Close()
-    _logger.info('Closing Unsteady flow window...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _close_unsteady)
-    time.sleep(.5)
-
-    def _run_ras_mapper():
-        return hecras_window.MenuItem('&GIS Tools->RAS Mapper ...').Click()
-    # Run RAS Mapper
-    _logger.info('Running RAS Mapper...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _run_ras_mapper)
-    time.sleep(.5)
-
-    def _find_ras_window():
-        # return app.window_(title='RAS Mapper')
-        return pwa.findwindows.find_windows(title='RAS Mapper')[0]
-    _logger.info('Finding RAS Mapper window...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _find_ras_window)
-    time.sleep(.5)
-
-    def _set_ras_window():
-        return app.window_(title='RAS Mapper')
-    _logger.info('Setting RAS Mapper window...')
-    ras_mapper_window = pwa.timings.WaitUntilPasses(
-        _TIMEOUT, 0.5, _set_ras_window)
-    _logger.info(
-        'ras_mapper_window.Texts() = %s', ras_mapper_window.Texts())
-    time.sleep(.5)
-
-    def _run_flood_map1():
-        return ras_mapper_window['MenuStrip1'].TypeKeys('%t')
-    # Run Floodplain Mapping
-    _logger.info('Running Floodplain Mapping 1...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _run_flood_map1)
-    time.sleep(.5)
-
-    def _run_flood_map2():
-        return ras_mapper_window['MenuStrip1'].TypeKeys('f')
-    _logger.info('Running Floodplain Mapping 2...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _run_flood_map2)
-    time.sleep(.5)
-
-    def _find_flood_window():
-        return pwa.findwindows.find_windows(title='Floodplain Mapping')[0]
-    _logger.info('Finding Floodplain Mapping window....')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _find_flood_window)
-    time.sleep(.5)
-
-    def _set_flood_window():
-        return app.window_(title='Floodplain Mapping')
-    _logger.info('Setting Floodplain Mapping window...')
-    flood_map_window = pwa.timings.WaitUntilPasses(
-        _TIMEOUT, 0.5, _set_flood_window)
-    _logger.info('flood_map_window.Texts() = %s', flood_map_window.Texts())
-    time.sleep(.5)
-
-    def _select_max_ws1():
-        return flood_map_window['All2'].Click()
-    # Select Max WS and current time under Profiles
-    _logger.info('Selecting Max WS and current time under Profiles...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _select_max_ws1)
-    time.sleep(.5)
-
-    def _select_max_ws2():
-        return flood_map_window['All2'].Click()
-    _logger.info('Selecting Max WS 2...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _select_max_ws2)
-    time.sleep(.5)
-
-    def _select_max_ws3():
-        return flood_map_window['ListBox2'].Select(0)
-    _logger.info('Selecting Max WS 3...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _select_max_ws3)
-    time.sleep(.5)
-
-    def _select_cur_time():
-        return flood_map_window['ListBox2'].Select(1)
-    _logger.info('Selecting current time...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _select_cur_time)
-    time.sleep(.5)
-
-    def _select_wse1():
-        return flood_map_window['All'].Click()
-    # Select Water Surface Elevation under Variables
-    _logger.info('Selecting Water Surface Elevation under Variables...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _select_wse1)
-    time.sleep(.5)
-
-    def _select_wse2():
-        return flood_map_window['All'].Click()
-    _logger.info('Selecting WSE 2...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _select_wse2)
-    time.sleep(.5)
-
-    def _select_wse3():
-        return flood_map_window['ListBox'].Select(0)
-    _logger.info('Selecting WSE 3...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _select_wse3)
-    time.sleep(.5)
-
-    def _generate_layers():
-        return flood_map_window['Button7'].ClickInput()
-    _logger.info('Generating layers...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _generate_layers)
-    time.sleep(.5)
-
-    def _find_laygen_fin_window():
-        return pwa.findwindows.find_windows(
-            title='RAS Mapper', class_name='#32770')[0]
-    _logger.info('Waiting for layer generation to finish...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _find_laygen_fin_window)
-    time.sleep(.5)
-
-    def _set_laygen_fin_window():
-        return app.window_(title='RAS Mapper', class_name='#32770')
-    # Wait for layer generation to finish
-    _logger.info('Setting flood mapping finished window...')
-    ras_mapper_dialog = pwa.timings.WaitUntilPasses(
-        _TIMEOUT, 0.5, _set_laygen_fin_window)
-    _logger.info(
-        'ras_mapper_dialog.Texts() = %s', ras_mapper_dialog.Texts())
-    time.sleep(.5)
-
-    def _close_laygen_fin_window():
-        # ras_mapper_dialog['OK'].Click()
-        return ras_mapper_dialog.Close()
-    _logger.info('Closing flood mapping finished window...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _close_laygen_fin_window)
-    time.sleep(.5)
-
-    def _close_hecras():
-        return hecras_window.Close()
-    # Close HEC-RAS
-    _logger.info('Closing HEC-RAS...')
-    pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _close_hecras)
-    time.sleep(.5)
-
-    # def _kill_hecras():
-    #     app.kill_()
-    # Kill HEC-RAS
-    _logger.info('Killing HEC-RAS...')
-    # pwa.timings.WaitUntilPasses(_TIMEOUT, 0.5, _kill_hecras)
-    _kill_process_by_name('ras.exe')
-    time.sleep(.5)
-    # _logger.setLevel(logging.DEBUG)
 
 
 def shp2kmz(current_time):
