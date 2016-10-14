@@ -996,7 +996,7 @@ ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/charts/'],
 ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/json/'],
                                   shell=True)
             subprocess.check_call(['rsync.exe', '-aiPS', install_dir_unix +
-                                   'kmz',
+                                   'kmz/',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/testing/kmz/'],
                                   shell=True)
