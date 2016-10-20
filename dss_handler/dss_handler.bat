@@ -46,4 +46,4 @@ set CLASS_PATH=%CLASS_PATH%;%JAVA_PATH%\lib\ext\sunmscapi.jar
 set CLASS_PATH=%CLASS_PATH%;%JAVA_PATH%\lib\ext\sunpkcs11.jar
 set CLASS_PATH=%CLASS_PATH%;%JAVA_PATH%\lib\ext\zipfs.jar
 
-"%JAVA_PATH%\bin\java.exe" -classpath "%CLASS_PATH%" "-Dpython.path=%CLASS_PATH%" "-Djava.library.path=%HEC_DSSVUE_PATH%\lib"  -Xms512m -Xmx1024m org.python.util.jython "%DSS_HANDLER_PATH%\dss_handler.py" %*
+"%JAVA_PATH%\bin\java.exe" -classpath "%CLASS_PATH%" "-Dpython.path=%CLASS_PATH%" "-Djava.library.path=%HEC_DSSVUE_PATH%\lib"  -Xms128m -Xmx256m org.python.util.jython "%DSS_HANDLER_PATH%\dss_handler.py" %*
