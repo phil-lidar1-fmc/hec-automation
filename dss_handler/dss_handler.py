@@ -198,7 +198,7 @@ if __name__ == '__main__':
     ch.setLevel(_CONS_LOG_LEVEL)
     ch.setFormatter(formatter)
     _logger.addHandler(ch)
-    fh = logging.FileHandler(op.join('..', 'log', 'dss_handler.log'), mode='w')
+    fh = logging.FileHandler(op.join('log', 'dss_handler.log'), mode='w')
     fh.setLevel(_FILE_LOG_LEVEL)
     fh.setFormatter(formatter)
     _logger.addHandler(fh)
