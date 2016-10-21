@@ -115,7 +115,8 @@ def _setup_logging(args):
     ch.setLevel(_CONS_LOG_LEVEL)
     ch.setFormatter(formatter)
     _logger.addHandler(ch)
-    fh = logging.handlers.RotatingFileHandler(op.join('log', 'main_control.log'),
+    fh = logging.handlers.RotatingFileHandler(op.join('..', 'log',
+                                                      'main_control.log'),
                                               maxBytes=1048576, backupCount=5)
     fh.setLevel(_FILE_LOG_LEVEL)
     fh.setFormatter(formatter)
