@@ -129,7 +129,7 @@ file info...')
         if op.isdir(content_path):
             _logger.info('Deleting directory: %s', content)
             shutil.rmtree(content_path)
-        elif op.isfile(content_path):
+        elif op.isfile(content_path) and not content.startswith('.'):
             _logger.info('Deleting file: %s', content)
             os.remove(content_path)
 
