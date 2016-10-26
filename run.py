@@ -12,11 +12,11 @@ if os.path.isdir(RUNDIR):
             # Check if it's a batch file
             if c.endswith('.bat'):
                 # Run batch file
-                print '#' * 40, 'Running', c, '#' * 40
+                print '\n', '#' * 40, 'Running', c, '#' * 40, '\n'
                 run = subprocess.Popen(os.path.join(RUNDIR, c), cwd=RUNDIR)
                 run.wait()
                 count += 1
         # Sleep for a set interval
         dur = 60 / count * 60
-        print '#' * 40, 'Sleep for', dur, 'secs #' * 40
+        print '\n', '#' * 40, 'Sleeping for', dur, 'secs', '#' * 40, '\n'
         time.sleep(dur)
