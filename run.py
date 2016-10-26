@@ -8,7 +8,7 @@ if os.path.isdir(RUNDIR):
     while True:
         count = 0.
         # List folder contents
-        for c in os.path.listdir(RUNDIR):
+        for c in os.listdir(RUNDIR):
             # Check if it's a batch file
             if c.endswith('.bat'):
                 # Run batch file
