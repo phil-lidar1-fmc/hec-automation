@@ -13,7 +13,7 @@ if os.path.isdir(RUNDIR):
             if c.endswith('.bat'):
                 # Run batch file
                 print '#' * 40, 'Running', c, '#' * 40
-                run = subprocess.Popen(c, cwd=RUNDIR)
+                run = subprocess.Popen(os.path.join(RUNDIR, c), cwd=RUNDIR)
                 run.wait()
                 count += 1
         # Sleep for a set interval
