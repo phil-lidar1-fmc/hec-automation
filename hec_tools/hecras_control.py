@@ -28,20 +28,18 @@ Acknowledgements:
 
 from datetime import datetime
 from pykml import parser as pykml_parser
-from pywinauto import win32functions
 import logging
 import lxml
 import main_control
 import math
 import os
 import os.path as op
-import psutil
 import pywinauto as pwa
 import shutil
 import subprocess
 import time
 
-_version = '2.25'
+_version = '2.26'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
 _PWA_TIMEOUT = 180  # seconds
@@ -132,13 +130,6 @@ file info...')
         elif op.isfile(content_path) and not content.startswith('.'):
             _logger.info('Deleting file: %s', content)
             os.remove(content_path)
-
-
-def _kill_process_by_name(name):
-    for p in psutil.process_iter():
-        if p.name == name:
-            _logger.info('Killing %s process with pid %s', name, p.pid)
-            p.kill()
 
 
 def run_hecras():
