@@ -2,7 +2,7 @@
 
 ### General ###
 InstallDir=C:\hec-automation
-JavaDir=C:\Program Files (x86)\Java\jre1.8.0_102
+JavaDir=C:\hec-automation\jre1.8.0
 HEC-DSSVueDir=C:\Program Files (x86)\HEC\HEC-DSSVue
 HEC-HMSDir=C:\Program Files (x86)\HEC\HEC-HMS\4.0
 HEC-RASDir=C:\Program Files (x86)\HEC\HEC-RAS\4.1.0
