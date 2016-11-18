@@ -27,7 +27,7 @@ import os
 import os.path as op
 import logging
 
-_version = '2.8.9'
+_version = '2.9'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
 _rainfall_palettes = {1: '34,102,102,1',
@@ -388,7 +388,14 @@ $(function () {
                     tooltip: {
                         valueSuffix: ' mm/hr'
                     },
-                    yAxis: 1,
+                    yAxis: 1,""")
+                if k1 == 3:
+                    chart_file.write("""
+                    visible: true,""")
+                else:
+                    chart_file.write("""
+                    visible: false,""")
+                chart_file.write("""
                     data: [
                         """)
                 chart_file.write(_data_writer(v2))
