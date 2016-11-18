@@ -496,28 +496,45 @@ def _get_cumulative_rainfall2():
     cumhr_max = 24
     for location, data in _rainfall_data_in_mm_per_hour.items():
 
+        # _logger.debug('location = %s', location)
+
         # Initialize cumulative rainfall
         cumhr = cumhr_min
         while cumhr <= cumhr_max:
+            # _logger.debug('cumhr = %s', cumhr)
             cumulative_rainfall[cumhr] = 0
-            rainfall_data_cumulative[cumhr] = {location: {}}
+            rainfall_data_cumulative[cumhr][location] = {}
             cumhr *= 2
+
+        # _logger.debug('cumulative_rainfall = %s', pformat(
+        #     cumulative_rainfall, indent=4, width=160))
+        # _logger.debug('rainfall_data_cumulative = %s', pformat(
+        #     rainfall_data_cumulative, indent=4, width=160))
 
         # Accumulate rainfall
         for dt, rainfall in sorted(data.viewitems()):
 
+            # _logger.debug('dt = %s rainfall = %s', dt, rainfall)
+
             cumhr = cumhr_min
             while cumhr <= cumhr_max:
+                _logger.debug('cumhr = %s', cumhr)
                 # Add current rainfall to cumulative rainfall
                 cumulative_rainfall[cumhr] += rainfall
+                # _logger.debug(
+                #     'cumulative_rainfall[cumhr] = %s', cumulative_rainfall[cumhr])
                 # Add current cumulative rainfall to all dict
                 rainfall_data_cumulative[cumhr][location][dt] = \
                     cumulative_rainfall[cumhr]
+                # _logger.debug('rainfall_data_cumulative[cumhr][location][dt] = %s', rainfall_data_cumulative[
+                #               cumhr][location][dt])
 
                 # Reset cumulative rainfall if current hour is divisible by
                 # accumlate hour
                 if dt.hour % cumhr == 0:
                     cumulative_rainfall[cumhr] = 0
+                    # _logger.debug(
+                    #     'cumulative_rainfall[cumhr] = %s', cumulative_rainfall[cumhr])
 
                 cumhr *= 2
 
