@@ -373,7 +373,7 @@ $(function () {
             #             show_old_predicted):
             counter = len(v1)
             for k2, v2 in sorted(v1.viewitems()):
-                if counter <= 0:
+                if counter >= 0:
                     chart_file.write(""" // counter: """ + str(counter) + """
                 }, {""")
                 chart_file.write("""
