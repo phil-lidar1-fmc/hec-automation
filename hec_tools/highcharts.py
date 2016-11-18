@@ -365,17 +365,17 @@ $(function () {
         #     chart_file.write("""
         #         ]""")
         #     counter -= 1
-        chart_file.write("""
-            }, {""")
+        # chart_file.write("""
+        #     }, {""")
         for k1, v1 in sorted(_rainfall_data.viewitems()):
             # if (not testing and k in _release_trans) or testing:
             #     if ((not show_old_predicted and k == 'Old Predicted') or
             #             show_old_predicted):
             counter = len(v1)
             for k2, v2 in sorted(v1.viewitems()):
-                # if counter != 0:
-                #     chart_file.write("""
-                # }, {""")
+                if counter <= 0:
+                    chart_file.write(""" // counter: """ + str(counter) + """
+                }, {""")
                 chart_file.write("""
                     name: """)
                 chart_file.write("'" + k2 + ' (' + str(k1) + "hr cum)',")
@@ -403,9 +403,9 @@ $(function () {
                 chart_file.write("""
                         ]""")
                 counter -= 1
-                if counter != 0:
-                    chart_file.write("""
-                    }, {""")
+                # if counter != 0:
+                #     chart_file.write("""
+                #     }, {""")
         chart_file.write("""
             }]""")
         chart_file.write("""
