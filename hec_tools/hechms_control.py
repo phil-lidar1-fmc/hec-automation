@@ -85,6 +85,8 @@ def hechms_control(current_time, main_config, hechms_config):
     # Get cumulative rainfall
     _logger.info('Getting cumulative rainfall...')
     _rainfall_data_cumulative = _get_cumulative_rainfall2()
+    _logger.debug('_rainfall_data_cumulative = %s', pprint.pformat(
+        _rainfall_data_cumulative, indent=4, width=160))
     # Get water level data
     _logger.info('Getting water level data...')
     global _waterlevel_data
