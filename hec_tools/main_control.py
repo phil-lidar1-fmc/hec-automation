@@ -38,7 +38,7 @@ import subprocess
 import sys
 import time
 
-_version = '2.24'
+_version = '2.25'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
 _LOG_LEVEL = logging.DEBUG

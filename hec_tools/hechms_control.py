@@ -43,7 +43,7 @@ import json
 import main_control
 import pprint
 
-_version = '2.19.1'
+_version = '2.20'
 print(os.path.basename(__file__) + ': v' + _version)
 np.seterr(all='raise')
 _logger = logging.getLogger()

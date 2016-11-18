@@ -368,9 +368,9 @@ $(function () {
         #     counter -= 1
         # chart_file.write("""
         #     }, {""")
-        chart_file.write("""/*""")
-        chart_file.write(pformat(_rainfall_data, indent=4, width=200))
-        chart_file.write("""*/""")
+        # chart_file.write("""/*""")
+        # chart_file.write(pformat(_rainfall_data, indent=4, width=200))
+        # chart_file.write("""*/""")
         for k1, v1 in sorted(_rainfall_data.viewitems()):
             # if (not testing and k in _release_trans) or testing:
             #     if ((not show_old_predicted and k == 'Old Predicted') or
