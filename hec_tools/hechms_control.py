@@ -503,6 +503,9 @@ def _get_cumulative_rainfall2():
         while cumhr <= cumhr_max:
             # _logger.debug('cumhr = %s', cumhr)
             cumulative_rainfall[cumhr] = 0
+            # rainfall_data_cumulative[cumhr] = {}
+            if not cumhr in rainfall_data_cumulative:
+                rainfall_data_cumulative[cumhr] = {}
             rainfall_data_cumulative[cumhr][location] = {}
             cumhr *= 2
 
