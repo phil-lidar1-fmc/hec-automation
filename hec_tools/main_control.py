@@ -38,7 +38,7 @@ import subprocess
 import sys
 import time
 
-_version = '2.23'
+_version = '2.24'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
 _LOG_LEVEL = logging.DEBUG
@@ -985,17 +985,17 @@ if __name__ == '__main__':
             install_dir_unix = '/cygdrive/' + \
                 _MAIN_CONFIG.install_dir.replace(
                     '\\', '/').replace('C:', 'c') + '/'
-            subprocess.check_call(['rsync.exe', '-aiPS', install_dir_unix +
+            subprocess.check_call(['rsync.exe', '-rtiPS', install_dir_unix +
                                    'charts/*.html',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/charts/'],
                                   shell=True)
-            subprocess.check_call(['rsync.exe', '-aiPS', install_dir_unix +
+            subprocess.check_call(['rsync.exe', '-rtiPS', install_dir_unix +
                                    'json/*.json',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/json/'],
                                   shell=True)
-            subprocess.check_call(['rsync.exe', '-aiPS', install_dir_unix +
+            subprocess.check_call(['rsync.exe', '-rtiPS', install_dir_unix +
                                    'kmz/',
                                    'hmsrasauto-admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/kmz/'],
