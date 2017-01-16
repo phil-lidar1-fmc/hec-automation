@@ -60,8 +60,8 @@ class ASTISensor:
                     if k != 'dateTimeRead':
                         if k not in self._data:
                             self._data[k] = {}
-                        if dateTimeRead not in self._data[k]:
-                            self._data[k][dateTimeRead] = {}
+                        # if dateTimeRead not in self._data[k]:
+                        #     self._data[k][dateTimeRead] = {}
                         try:
                             self._data[k][dateTimeRead] = float(v)
                         except TypeError:
@@ -71,8 +71,8 @@ class ASTISensor:
                         if 'waterlevel' in k:
                             self._data[k][dateTimeRead] /= 1000.
             # Get start time and end time
-            data_type = self._data.keys()[0]
-            sorted_data = sorted(self._data[data_type].items())
+            data_type = self._data.viewkeys()[0]
+            sorted_data = sorted(self._data[data_type].viewitems())
             self._start_time = sorted_data[0][0]
             self._end_time = sorted_data[-1][0]
 
