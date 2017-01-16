@@ -8,6 +8,7 @@ pykml==0.1.0
 pyparsing==2.1.10
 pypiwin32==219
 pywinauto==0.5.4
+requests==2.12.4
 scipy==0.16.1
 six==1.10.0
 tappy==0.9.2
