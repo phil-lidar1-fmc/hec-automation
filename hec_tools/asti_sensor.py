@@ -71,7 +71,7 @@ class ASTISensor:
                         if 'waterlevel' in k:
                             self._data[k][dateTimeRead] /= 1000.
             # Get start time and end time
-            data_type = self._data.viewkeys()[0]
+            data_type = self._data.keys()[0]
             sorted_data = sorted(self._data[data_type].viewitems())
             self._start_time = sorted_data[0][0]
             self._end_time = sorted_data[-1][0]
