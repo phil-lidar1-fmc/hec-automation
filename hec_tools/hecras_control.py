@@ -46,12 +46,14 @@ _PWA_TIMEOUT = 180  # seconds
 _DEVNULL = open(os.devnull, 'w')
 
 
-def hecras_control(current_time, main_config, hecras_config, series_info):
+def hecras_control(main_config, disc_gage_info, hecras_config):
     hechms_start = datetime.now()
     _logger.info('hechms_start = %s', hechms_start)
+
     # Initialize HEC-RAS
     _logger.info('Initializing HEC-RAS...')
-    initialize_hecras(current_time, main_config, hecras_config, series_info)
+    initialize_hecras(main_config, disc_gage_info, hecras_config)
+
     # Run HEC-RAS
     _logger.info('Running HEC-RAS...')
     try:
@@ -59,6 +61,7 @@ def hecras_control(current_time, main_config, hecras_config, series_info):
     except Exception:
         _logger.exception('Error while running HEC-RAS!')
         raise
+
     # Convert shapefiles to kmz
     _logger.info('Converting shapefiles to kmz...')
     shp2kmz(current_time)
@@ -67,21 +70,32 @@ def hecras_control(current_time, main_config, hecras_config, series_info):
     _logger.info('hecras_duration = %s', hecras_end - hechms_start)
 
 
-def initialize_hecras(current_time, main_config, hecras_config, series_info):
-    _logger.debug('series_info = %s', series_info)
+def initialize_hecras(main_config, disc_gage_info, hecras_config):
+    # _logger.debug('series_info = %s', series_info)
+
     # Set global parameters
     _logger.info('Setting global parameters...')
     global _MAIN_CONFIG
     _MAIN_CONFIG = main_config
+    global _disc_gage_info
+    _disc_gage_info = disc_gage_info
     global _HECRAS_CONFIG
     # if edits are made to this variable, consider copying
     _HECRAS_CONFIG = hecras_config
-    #
-    # Get simulation end time based on last data on the dss file
-    _logger.info('Getting simulation end time...')
-    end_time = series_info['dss_info'].end_time
+
+    # Get simulation start/current and end time based on last data on the dss
+    # file
+    _logger.info('Getting simulation start/current and end time...')
+    global current_time
+    current_time = disc_gage_info['predicted']['discharge']['dss'].start_time()
+    # end_time = series_info['dss_info'].end_time
+    end_time = disc_gage_info['predicted']['discharge']['dss'].end_time()
+    _logger.debug('current_time = %s', current_time)
     _logger.debug('end_time = %s', end_time)
+
+    #
     # Update simulation date
+    #
     _logger.info('Updating simulation date...')
     # Read plan file into buffer and update simulation date
     _logger.info('Reading plan file into buffer and updating simulation \
@@ -98,7 +112,10 @@ date...')
     _logger.info('Writing new plan file...')
     with open(_HECRAS_CONFIG.plan_file, 'w') as open_file:
         open_file.write('\n'.join(buf))
+
+    #
     # Update dss file info
+    #
     _logger.info('Updating dss file info...')
     # Read unsteady flow file into buffer and update dss file info
     _logger.info('Reading unsteady flow file into buffer and updating dss \
@@ -107,11 +124,15 @@ file info...')
     for _, line in main_control.text_file_line_gen(
             _HECRAS_CONFIG.unsflow_file):
         if 'DSS File' in line:
-            buf.append('DSS File=' + op.relpath(series_info['dss_file'],
+            # buf.append('DSS File=' + op.relpath(series_info['dss_file'],
+            #                                     _HECRAS_CONFIG.hecras_proj_dir))
+            buf.append('DSS File=' + op.relpath(disc_gage_info['predicted']['discharge']['dss'].filepath(),
                                                 _HECRAS_CONFIG.hecras_proj_dir))
             _logger.debug(buf[-1])
         elif 'DSS Path' in line:
-            buf.append('DSS Path=' + series_info['dss_info'].fullName)
+            # buf.append('DSS Path=' + series_info['dss_info'].fullName)
+            buf.append(
+                'DSS Path=' + disc_gage_info['predicted']['discharge']['dss'].fullname())
         elif 'Use DSS' in line:
             buf.append('Use DSS=True')
         else:
@@ -120,6 +141,7 @@ file info...')
     _logger.info('Writing new unsteady flow file...')
     with open(_HECRAS_CONFIG.unsflow_file, 'w') as open_file:
         open_file.write('\n'.join(buf))
+
     # Delete contents of flood mapping shapefile directory
     _logger.info('Cleaning up flood mapping shapefile directory...')
     for content in sorted(os.listdir(_HECRAS_CONFIG.flood_map_dir)):

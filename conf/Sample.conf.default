@@ -1,56 +1,63 @@
 # Lines beginning with '#' and whitespaces are ignored
 
-### General ###
-InstallDir=C:\hec-automation
-JavaDir=C:\hec-automation\jre1.8.0
+[ General ]
 HEC-DSSVueDir=C:\Program Files (x86)\HEC\HEC-DSSVue
 HEC-HMSDir=C:\Program Files (x86)\HEC\HEC-HMS\4.0
 HEC-RASDir=C:\Program Files (x86)\HEC\HEC-RAS\4.1.0
-FWToolsDir=C:\OSGeo4W64
+OSGeo4W64Dir=C:\OSGeo4W64
 7-ZipDir=C:\Program Files\7-Zip
 JythonDir=C:\jython2.7.0
-CacheDir=C:\hec-automation\cache\repo.pscigrid.gov.ph
-ChartsDir=C:\hec-automation\charts
-JSONDir=C:\hec-automation\json
 
 
-### Run ###
+[ Run ]
 # Interval (in minutes) between runs
 Interval=10
-NormalInterval=True
 #Testing=True
 Testing=False
 # If Testing is True, use StartTime and EndTime
 #StartTime=2016-10-09 00:00
 #EndTime=2016-10-10 00:00
 # If RunOnce is True, only a single run is done
-RunOnce=False
+RunOnce=True
 RunHEC-HMS=True
 RunHEC-RAS=True
 
 
-### HEC-HMS parameters ###
+[ HEC-HMS ]
 HEC-HMSProjectDir=C:\hec-automation\models\HEC-HMS\CDO
 HEC-HMSProjectName=CDO
+
 PrecipGages=CDO_PRECIP1;CDO_PRECIP2;CDO_PRECIP3
 # CDO_PRECIP1: Libona priority
-CDO_PRECIP1=predict|csv|rainfall|BUKIDNON-BUBUNAWAN_BRIDGE-WATERLEVEL_&_RAIN
+# Old:
+# CDO_PRECIP1=predict|csv|rainfall|BUKIDNON-BUBUNAWAN_BRIDGE-WATERLEVEL_&_RAIN
+# New:
+CDO_PRECIP1=313
+
 # CDO_PRECIP2: Sto. Nino, Talakag Priority
-CDO_PRECIP2=predict|csv|rainfall|BUKIDNON-STO._NINO-RAIN2
+# Old:
+# CDO_PRECIP2=predict|csv|rainfall|BUKIDNON-STO._NINO-RAIN2
+# New:
+CDO_PRECIP2=285
+
 # CDO_PRECIP3: Baungon priority
-CDO_PRECIP3=predict|csv|rainfall|BUKIDNON-BAUNGON_POBLACION-RAIN2
+# Old:
+# CDO_PRECIP3=predict|csv|rainfall|BUKIDNON-BAUNGON_POBLACION-RAIN2
+# New:
+CDO_PRECIP3=280
+
 DischargeGages=CDO_DISC;
-CDO_DISC=predict|csv|waterlevel|MISAMIS_ORIENTAL-CDO_BRIDGE,_CARMEN-WATERLEVEL_&_RAIN_2
+# Old:
+# CDO_DISC=predict|csv|waterlevel|MISAMIS_ORIENTAL-CDO_BRIDGE,_CARMEN-WATERLEVEL_&_RAIN_2
+# New:
+CDO_DISC=311
+
 HQ_Curve=CDO_DISC|1.818|0.740|EXP;
-ComputeScript=compute.script
-RainfallScenarios=;
 TidalCorrection=CDO_DISC;
-MinMaxWaterLevelChart=CDO_DISC|1|8;
-ReflectMinutes=0
 PredictSeriesPrio=CDO_DISC|_PTOSERIES|_PLOSERIES|_POSERIES;
 
 
-### HEC-RAS parameters ###
+[ HEC-RAS - CDO_DISC ]
 HEC-RASProjectDir=C:\hec-automation\models\HEC-RAS\CDO
 HEC-RASProjectName=CDO
 FloodMappingDir=C:\hec-automation\models\HEC-RAS\CDO\Plan 05
