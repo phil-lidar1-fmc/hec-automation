@@ -23,4 +23,4 @@ fi
 
 echo
 echo Running multiple models in 1 VM...
-/cygdrive/c/Python27/python.exe -u "$INSTALL_PATH/run.py"
+/cygdrive/c/Python27/python.exe -u run.py
