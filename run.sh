@@ -5,7 +5,7 @@ INSTALL_PATH='/cygdrive/c/hec-automation'
 
 echo
 echo Fixing git config...
-"$GIT" config --global core.autocrlf input
+"$GIT" config --global core.autocrlf false
 
 echo
 echo Pulling latest code from branch...
