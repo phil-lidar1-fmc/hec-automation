@@ -2,7 +2,7 @@
 
 echo.
 echo Fixing git config...
-C:\Program Files\Git\bin\git.exe config --global core.autocrlf false
+"C:\Program Files\Git\bin\git.exe" config --global core.autocrlf false
 
 echo.
 echo Running run.sh...
