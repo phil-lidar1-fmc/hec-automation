@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
-GIT='/cygdrive/c/Program Files/Git/bin/git.exe'
 INSTALL_PATH='/cygdrive/c/hec-automation'
 
-echo
-echo Fixing git config...
-"$GIT" config --global core.autocrlf false
+# echo
+# echo Fixing git config...
+# "$GIT" config --global core.autocrlf false
 
 echo
 echo Pulling latest code from branch...
-out=$( "$GIT" pull origin prod_v2 )
+out=$( '/cygdrive/c/Program Files/Git/bin/git.exe' pull origin prod_v2 )
 echo "$out" | grep 'Updating'
 if [ $? -eq 0 ]; then
     echo Update found...
