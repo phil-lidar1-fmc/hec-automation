@@ -217,7 +217,7 @@ def _get_rainfall_data_in_mm():
                                             end_time=_current_time)
 
         _logger.debug("prec_gage_info['sensor'].data(): %s",
-                      pprint.pformat(prec_gage_info['sensor'].data()))
+                      pprint.pformat(prec_gage_info['sensor'].data(), width=40))
 
         # Write dss
         prec_gage_info['sensor'].dss()
@@ -337,13 +337,13 @@ to current time: %s', _current_time)
                       pprint.pformat(disc_gage_info['sensor'].data()))
 
         # Write dss
-        disc_gage_info['sensor'].dss().write()
+        disc_gage_info['sensor'].dss()
 
         _logger.debug("disc_gage_info['sensor'].dss().filepath(): %s",
                       disc_gage_info['sensor'].dss().filepath())
 
     _logger.debug('_HECHMS_CONFIG.disc_gages: %s',
-                  pprint.pformat(_HECHMS_CONFIG.disc_gages))
+                  pprint.pformat(_HECHMS_CONFIG.disc_gages, width=40))
 
 
 def _run_hechms():
