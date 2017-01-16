@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 echo
+echo Fixing git config...
+'/cygdrive/c/Program Files/Git/bin/git.exe' config --global core.autocrlf input
+
+echo
 echo Pulling latest code from branch...
 out=$( '/cygdrive/c/Program Files/Git/bin/git.exe' pull origin prod_v2 )
 echo "$out" | grep 'Updating'
