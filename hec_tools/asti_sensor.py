@@ -62,7 +62,11 @@ class ASTISensor:
                             self._data[k] = {}
                         if dateTimeRead not in self._data[k]:
                             self._data[k][dateTimeRead] = {}
-                        self._data[k][dateTimeRead] = float(v)
+                        try:
+                            self._data[k][dateTimeRead] = float(v)
+                        except TypeError:
+                            # Ignore null values
+                            continue
                         # Convert mm to m for waterlevel
                         if 'waterlevel' in k:
                             self._data[k][dateTimeRead] /= 1000.
