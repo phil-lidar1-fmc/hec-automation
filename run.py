@@ -2,6 +2,9 @@ import os
 import subprocess
 import time
 
+# print 'Testing!'
+# exit(1)
+
 # Check if run dir exists
 RUNDIR = os.path.abspath('run')
 if os.path.isdir(RUNDIR):
