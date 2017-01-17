@@ -228,7 +228,7 @@ $(function () {
                 },
                 labels: {
                     formatter: function() {
-                        return this.value +' mm/hr';
+                        return this.value +' mm';
                     },
                     style: {
                         color: '#4572A7'
