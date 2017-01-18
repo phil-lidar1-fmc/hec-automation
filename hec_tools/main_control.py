@@ -983,17 +983,17 @@ if __name__ == '__main__':
                     '\\', '/').replace('C:', 'c') + '/'
             subprocess.check_call(['rsync.exe', '-rtiPS', install_dir_unix +
                                    'charts/*.html',
-                                   'hmsrasauto-admin@website.dmz.dream.upd.edu.\
+                                   'admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/charts/'],
                                   shell=True)
             subprocess.check_call(['rsync.exe', '-rtiPS', install_dir_unix +
                                    'json/*.json',
-                                   'hmsrasauto-admin@website.dmz.dream.upd.edu.\
+                                   'admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/json/'],
                                   shell=True)
             subprocess.check_call(['rsync.exe', '-rtiPS', install_dir_unix +
                                    'kmz/',
-                                   'hmsrasauto-admin@website.dmz.dream.upd.edu.\
+                                   'admin@website.dmz.dream.upd.edu.\
 ph:/srv/www/www.dream.upd.edu.ph/hectools/kmz/'],
                                   shell=True)
         except subprocess.CalledProcessError:
