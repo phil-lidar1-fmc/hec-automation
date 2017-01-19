@@ -7,6 +7,10 @@ echo Fixing git config...
 "%GIT%" config --global core.autocrlf false
 
 echo.
+echo Resetting local git repository...
+"%GIT%" reset --hard
+
+echo.
 echo Pulling latest code from branch...
 "%GIT%" pull origin prod_v2
 
