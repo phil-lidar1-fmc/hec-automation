@@ -67,9 +67,9 @@ class ASTISensor:
                         except TypeError:
                             # Ignore null values
                             continue
-                        # Convert mm to m for waterlevel
+                        # Convert cm to m for waterlevel
                         if 'waterlevel' in k:
-                            self._data[k][dateTimeRead] /= 1000.
+                            self._data[k][dateTimeRead] /= 100.
             # Get start time and end time
             data_type = self._data.keys()[0]
             sorted_data = sorted(self._data[data_type].viewitems())
