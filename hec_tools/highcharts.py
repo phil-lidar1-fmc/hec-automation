@@ -93,7 +93,7 @@ def write_html(chart_fp, testing=False, show_old_predicted=False):
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>""")
 
-        chart_file.write(_location)
+        chart_file.write(_location + ' ' + _ismsl)
 
         chart_file.write("""</title>
         <script type="text/javascript" \
