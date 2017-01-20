@@ -42,6 +42,7 @@ import time
 _version = '2.26'
 print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
+_logger.handlers.pop()
 _PWA_TIMEOUT = 180  # seconds
 _DEVNULL = open(os.devnull, 'w')
 

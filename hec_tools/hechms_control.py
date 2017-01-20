@@ -40,7 +40,6 @@ import os.path as op
 import pickle
 import pprint
 import re
-import repo_handler
 import scipy.stats
 import subprocess
 
@@ -337,10 +336,15 @@ to current time: %s', _current_time)
                       pprint.pformat(disc_gage_info['sensor'].data()))
 
         # Write dss
-        disc_gage_info['sensor'].dss()
+        # disc_gage_info['sensor'].dss()
 
-        _logger.debug("disc_gage_info['sensor'].dss().filepath(): %s",
-                      disc_gage_info['sensor'].dss().filepath())
+        # _logger.debug("disc_gage_info['sensor'].dss().filepath(): %s",
+        #               disc_gage_info['sensor'].dss().filepath())
+
+        # Add water level offset
+        o = disc_gage_info['waterlevel_offset']
+        for t in disc_gage_info['sensor'].data().viewkeys():
+            disc_gage_info['sensor'].data()[t] += o
 
     _logger.debug('_HECHMS_CONFIG.disc_gages: %s',
                   pprint.pformat(_HECHMS_CONFIG.disc_gages, width=40))

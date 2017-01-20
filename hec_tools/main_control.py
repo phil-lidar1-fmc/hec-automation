@@ -34,8 +34,6 @@ import logging.handlers
 import math
 import numpy.random
 import os
-# import os.path as op
-import repo_handler
 import subprocess
 import sys
 import time
@@ -106,6 +104,7 @@ def _setup_logging(args):
 #    formatter = logging.Formatter('[%(asctime)s] %(filename)s: %(message)s')
     formatter = logging.Formatter('[%(asctime)s] %(filename)s \
 (%(levelname)s,%(lineno)d)\t: %(message)s')
+
     global _CONS_LOG_LEVEL
     if args.verbose >= 1:
         _CONS_LOG_LEVEL = logging.DEBUG
@@ -113,6 +112,7 @@ def _setup_logging(args):
     ch.setLevel(_CONS_LOG_LEVEL)
     ch.setFormatter(formatter)
     _logger.addHandler(ch)
+
     fh = logging.FileHandler(os.path.join('log', 'main_control.log'), mode='w')
     fh.setLevel(_FILE_LOG_LEVEL)
     fh.setFormatter(formatter)
@@ -559,14 +559,14 @@ exists...')
                 offset = float(tokens[1])
                 _logger.debug('offset: %s', offset)
 
-                disc_gages[disc_gage]['WaterLevelOffset'] = offset
+                disc_gages[disc_gage]['waterlevel_offset'] = offset
         except ValueError:
             _logger.error(
                 'Error parsing "WaterLevelOffset" from conf file! Exiting.')
             exit(1)
     else:
         for disc_gage in disc_gages.keys():
-            disc_gages[disc_gage]['WaterLevelOffset'] = 0.
+            disc_gages[disc_gage]['waterlevel_offset'] = 0.
 
     # Get h-q curve eqn info for each discharge gage
     _logger.info('Getting h-q curve eqn info for each discharge gage...')
