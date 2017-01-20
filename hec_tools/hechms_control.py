@@ -337,7 +337,7 @@ end time: %s', _end_time)
             _logger.info('Fetching non-MSL water level data...')
 
             # Set data type to waterlevel only
-            disc_gages[disc_gage]['sensor'].data_type('waterlevel')
+            disc_gage_info['sensor'].data_type('waterlevel')
 
             # Fetch data again
             disc_gage_info['sensor'].fetch_data(start_time=st, end_time=et)
