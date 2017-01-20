@@ -316,24 +316,34 @@ def _get_waterlevel_data():
         # Get water level data and store it in a dss file
         # Water level data time range will be from historical start until
         # end time
+        st = _hist_start
         if not _MAIN_CONFIG.testing:
-
             _logger.info('Release version: Only getting water level data up \
 to current time: %s', _current_time)
-
-            disc_gage_info['sensor'].fetch_data(start_time=_hist_start,
-                                                end_time=_current_time)
-
+            et = _current_time
         else:
-
             _logger.info('Testing version: Getting water level data up to \
-    end time: %s', _end_time)
+end time: %s', _end_time)
+            et = _end_time
 
-            disc_gage_info['sensor'].fetch_data(start_time=_hist_start,
-                                                end_time=_end_time)
+        # Fetch data
+        disc_gage_info['sensor'].fetch_data(start_time=st, end_time=et)
 
         _logger.debug("disc_gage_info['sensor'].data(): %s",
                       pprint.pformat(disc_gage_info['sensor'].data()))
+
+        # If there are no water level MSL data, fetch non-MSL
+        if not disc_gage_info['sensor'].data():
+            _logger.info('Fetching non-MSL water level data...')
+
+            # Set data type to waterlevel only
+            disc_gages[disc_gage]['sensor'].data_type('waterlevel')
+
+            # Fetch data again
+            disc_gage_info['sensor'].fetch_data(start_time=st, end_time=et)
+
+            _logger.debug("disc_gage_info['sensor'].data(): %s",
+                          pprint.pformat(disc_gage_info['sensor'].data()))
 
         # Write dss
         # disc_gage_info['sensor'].dss()

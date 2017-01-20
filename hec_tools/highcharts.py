@@ -64,6 +64,10 @@ def write_chart(current_time, start_time, end_time,
     _HECHMS_CONFIG = hechms_config
     global _location
     _location = _disc_gage_info['sensor'].meta()['location']
+    global _ismsl
+    _ismsl = '(non-MSL)'
+    if 'msl' in _disc_gage_info['sensor'].data_type():
+        _ismsl = '(MSL)'
 
     # Get chart file path
     chart_fp = op.join(_MAIN_CONFIG.charts_dir,
