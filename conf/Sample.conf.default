@@ -55,7 +55,8 @@ CDO_DISC=311
 HQ_Curve=CDO_DISC|1.818|0.740|EXP;
 TidalCorrection=CDO_DISC;
 PredictSeriesPrio=CDO_DISC|_PTOSERIES|_PLOSERIES|_POSERIES;
-WaterLevelOffset=;
+SpillingLevels=CDO_DISC|11.09|11.08;
+WaterLevelOffset=CDO_DISC|0.;
 
 
 [ HEC-RAS - CDO_DISC ]
