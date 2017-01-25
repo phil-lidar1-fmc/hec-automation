@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from dss_file import DSSFile
-from pprint import pprint
+from pprint import pprint, pformat
 import requests
 
 
@@ -95,7 +95,10 @@ class ASTISensor:
 
     def data(self):
         if self._data_type not in self._data:
-            raise Exception('Data type not found!')
+            if 'waterlevel' in self._data_type:
+                return
+            else:
+                raise Exception('Data type not found!')
         return self._data[self._data_type]
 
     def meta(self):
@@ -114,13 +117,15 @@ class ASTISensor:
         return self._end_time
 
     def __str__(self):
-        return str({
+        return pformat({
             'dev_url': self._dev_url,
-            'meta': self._meta
+            'meta': self._meta,
+            'data': self._data
         })
 
     def __repr__(self):
-        return repr({
+        return pformat({
             'dev_url': self._dev_url,
-            'meta': self._meta
+            'meta': self._meta,
+            'data': self._data
         })

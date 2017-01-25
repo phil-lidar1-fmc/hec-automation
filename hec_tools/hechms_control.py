@@ -118,23 +118,28 @@ def hechms_control(current_time, main_config, hechms_config):
             (_PSERIES, _POSERIES): 0.
         }
 
-        # Run linear regression on predicted water level
-        _logger.info('Running linear regression on predicted water level...')
-        try:
-            _run_linear_regress_with_outlier_removal(disc_gage_info)
-        except Exception:
-            _logger.exception('Error running linear regression!')
+        # If actual water level data is available
+        if disc_gage_info['sensor'].data():
 
-        # Check if tidal correction is needed
-        if disc_gage_info['tidal_correct']:
-            _logger.info('Applying tidal correction...')
-            _apply_tidal_correction(disc_gage_info)
-            disc_gage_info['offsets'][(_TSERIES, _TOSERIES)] = 0.
-            disc_gage_info['offsets'][(_PTSERIES, _PTOSERIES)] = 0.
+            # Run linear regression on predicted water level
+            _logger.info(
+                'Running linear regression on predicted water level...')
+            try:
+                _run_linear_regress_with_outlier_removal(disc_gage_info)
+            except Exception:
+                _logger.exception('Error running linear regression!')
 
-        # Get and apply predicted offsets from actual
-        _logger.info('Getting and applying predicted offsets from actual...')
-        _get_predicted_offset(disc_gage_info)
+            # Check if tidal correction is needed
+            if disc_gage_info['tidal_correct']:
+                _logger.info('Applying tidal correction...')
+                _apply_tidal_correction(disc_gage_info)
+                disc_gage_info['offsets'][(_TSERIES, _TOSERIES)] = 0.
+                disc_gage_info['offsets'][(_PTSERIES, _PTOSERIES)] = 0.
+
+            # Get and apply predicted offsets from actual
+            _logger.info('Getting and applying predicted offsets from \
+actual...')
+            _get_predicted_offset(disc_gage_info)
 
         # Get correct set of data series
         _logger.info('Getting correct set of data series for chart...')
@@ -327,34 +332,39 @@ end time: %s', _end_time)
             et = _end_time
 
         # Fetch data
-        disc_gage_info['sensor'].fetch_data(start_time=st, end_time=et)
-
-        _logger.debug("disc_gage_info['sensor'].data(): %s",
-                      pprint.pformat(disc_gage_info['sensor'].data()))
-
-        # If there are no water level MSL data, fetch non-MSL
-        if not disc_gage_info['sensor'].data():
-            _logger.info('Fetching non-MSL water level data...')
-
-            # Set data type to waterlevel only
-            disc_gage_info['sensor'].data_type('waterlevel')
-
-            # Fetch data again
+        try:
             disc_gage_info['sensor'].fetch_data(start_time=st, end_time=et)
 
             _logger.debug("disc_gage_info['sensor'].data(): %s",
                           pprint.pformat(disc_gage_info['sensor'].data()))
 
-        # Write dss
-        # disc_gage_info['sensor'].dss()
+            # If there are no water level MSL data, fetch non-MSL
+            if not disc_gage_info['sensor'].data():
+                _logger.info('Fetching non-MSL water level data...')
 
-        # _logger.debug("disc_gage_info['sensor'].dss().filepath(): %s",
-        #               disc_gage_info['sensor'].dss().filepath())
+                # Set data type to waterlevel only
+                disc_gage_info['sensor'].data_type('waterlevel')
 
-        # Add water level offset
-        o = disc_gage_info['waterlevel_offset']
-        for t in disc_gage_info['sensor'].data().viewkeys():
-            disc_gage_info['sensor'].data()[t] += o
+                # Fetch data again
+                disc_gage_info['sensor'].fetch_data(start_time=st, end_time=et)
+
+                _logger.debug("disc_gage_info['sensor'].data(): %s",
+                              pprint.pformat(disc_gage_info['sensor'].data()))
+
+            # Write dss
+            # disc_gage_info['sensor'].dss()
+
+            # _logger.debug("disc_gage_info['sensor'].dss().filepath(): %s",
+            #               disc_gage_info['sensor'].dss().filepath())
+
+            # Add water level offset
+            o = disc_gage_info['waterlevel_offset']
+            for t in disc_gage_info['sensor'].data().viewkeys():
+                disc_gage_info['sensor'].data()[t] += o
+
+        except Exception:
+            _logger.info('Error fetching actual water level data. \
+Continuing...')
 
     _logger.debug('_HECHMS_CONFIG.disc_gages: %s',
                   pprint.pformat(_HECHMS_CONFIG.disc_gages, width=40))
@@ -765,9 +775,10 @@ def _get_release_trans(disc_gage_info):
             break
 
     if not has_series:
-        _logger.error('Matching priority predicted series not found!')
-        _logger.error('Exiting.')
-        exit(1)
+        # _logger.error('Matching priority predicted series not found!')
+        # _logger.error('Exiting.')
+        # exit(1)
+        release_trans['Predicted'] = _PSERIES
 
     _logger.debug('release_trans: %s', release_trans)
 

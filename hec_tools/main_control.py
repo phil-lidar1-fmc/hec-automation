@@ -620,7 +620,7 @@ gage...')
         _logger.debug("disc_gages[tokens[0]]['pseries_prio']: %s",
                       disc_gages[tokens[0]]['pseries_prio'])
 
-    _logger.debug('disc_gages: %s', disc_gages)
+    _logger.debug('disc_gages:\n%s', pformat(disc_gages, width=40))
 
     # Get precipitation gages information
     _logger.info('Getting precipitation gages information...')
@@ -644,7 +644,7 @@ gage...')
             _logger.error('Exiting.')
             exit(1)
 
-    _logger.debug('prec_gages: %s', prec_gages)
+    _logger.debug('prec_gages:\n%s', pformat(prec_gages, width=40))
 
     global _HECHMS_CONFIG
     _HECHMS_CONFIG = HECHMSConfig(hechms_proj_dir,

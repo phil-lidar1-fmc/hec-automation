@@ -315,8 +315,9 @@ $(function () {
         chart_file.write(""",
             series: [{""")
 
-        # Write actual waterlevel data
-        chart_file.write("""
+        if _disc_gage_info['sensor'].data():
+            # Write actual waterlevel data
+            chart_file.write("""
                 name: 'Actual',
                 type: 'spline',
                 tooltip: {
@@ -324,10 +325,10 @@ $(function () {
                 },
                 data: [
                     """)
-        chart_file.write(_data_writer(_disc_gage_info['sensor'].data()))
-        chart_file.write("""
+            chart_file.write(_data_writer(_disc_gage_info['sensor'].data()))
+            chart_file.write("""
                 ]""")
-        chart_file.write("""
+            chart_file.write("""
             }, {""")
 
         # Write predicted waterlevel data
