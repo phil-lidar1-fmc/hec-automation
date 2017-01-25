@@ -549,25 +549,6 @@ exists...')
         # Initialize water level offset
         disc_gages[disc_gage]['waterlevel_offset'] = 0.
 
-    # Get water level offset for each discharge gage
-    _logger.info('Getting water level offset for each discharge gage...')
-    if 'WaterLevelOffset' in conf['HEC-HMS']:
-        try:
-            for offset_info in conf['HEC-HMS']['WaterLevelOffset']:
-                tokens = offset_info.split('|')
-
-                disc_gage = tokens[0]
-                _logger.debug('disc_gage: %s', tokens[0])
-
-                offset = float(tokens[1])
-                _logger.debug('offset: %s', offset)
-
-                disc_gages[disc_gage]['waterlevel_offset'] = offset
-        except ValueError:
-            _logger.error(
-                'Error parsing "WaterLevelOffset" from conf file! Exiting.')
-            exit(1)
-
     # Get h-q curve eqn info for each discharge gage
     _logger.info('Getting h-q curve eqn info for each discharge gage...')
     try:
@@ -605,8 +586,53 @@ Exiting.')
         _logger.debug("disc_gages[disc_gage]['hq_curve_eqn']: %s",
                       disc_gages[disc_gage]['hq_curve_eqn'])
     except ValueError:
-        _logger.error('Error parsing "HQ_Curve" from conf file! Exiting.')
+        _logger.exception('Error parsing "HQ_Curve" from conf file! Exiting.')
         exit(1)
+
+    # Get water level offset for each discharge gage
+    _logger.info('Getting water level offset for each discharge gage...')
+    if 'WaterLevelOffset' in conf['HEC-HMS']:
+        try:
+            for offset_info in conf['HEC-HMS']['WaterLevelOffset']:
+                tokens = offset_info.split('|')
+
+                disc_gage = tokens[0]
+                _logger.debug('disc_gage: %s', tokens[0])
+
+                offset = float(tokens[1])
+                _logger.debug('offset: %s', offset)
+
+                disc_gages[disc_gage]['waterlevel_offset'] = offset
+        except ValueError:
+            _logger.exception(
+                'Error parsing "WaterLevelOffset" from conf file! Exiting.')
+            exit(1)
+
+    # Get spilling levels for each discharge gage
+    _logger.info('Getting spilling levels for each discharge gage...')
+    if 'SpillingLevels' in conf['HEC-HMS']:
+        try:
+            for spilling_levels in conf['HEC-HMS']['SpillingLevels']:
+
+                tokens = spilling_levels.split('|')
+
+                disc_gage = tokens[0]
+                _logger.debug('disc_gage: %s', disc_gage)
+
+                l = float(tokens[1])
+                _logger.debug('l: %s', l)
+
+                r = float(tokens[2])
+                _logger.debug('r: %s', r)
+
+                disc_gages[disc_gage]['spilling_levels'] = {
+                    'left_bank': l,
+                    'right_bank': r
+                }
+        except ValueError:
+            _logger.exception('Error parsing "SpillingLevels" from conf file! \
+Exiting.')
+            exit(1)
 
     # Get predicted series priority for each discharge gage
     _logger.info('Getting predicted series priority for each discharge \

@@ -223,6 +223,36 @@ $(function () {
                     }
                 }""")
 
+        if 'spilling_levels' in _disc_gage_info:
+            chart_file.write("""
+                ,
+                plotLines: [{
+                    color: 'green',
+                    dashStyle: 'longdashdot',
+                    width: 2,
+                    value: """ + str(_disc_gage_info['spilling_levels']['left_bank']) + """,
+                    label : {
+                        text: 'Left bank',
+                        align: 'left',
+                        verticalAlign: 'top',
+                        x: -60,
+                        y: 10
+                    }
+                }, {
+                    color: 'blue',
+                    dashStyle: 'longdashdot',
+                    width: 2,
+                    value: """ + str(_disc_gage_info['spilling_levels']['right_bank']) + """,
+                    label : {
+                        text: 'Right bank',
+                        align: 'left',
+                        verticalAlign: 'top',
+                        x: -60,
+                        y: 10
+                    }
+                }]
+                """)
+
         chart_file.write("""
             }, { // Secondary Axis (Rainfall)
                 title: {
@@ -253,7 +283,7 @@ $(function () {
                     to: 2.5,
                     color: 'rgba(63, 210, 217, 0.1)',
                     label: {
-                        text: '(Light)',
+                        text: 'Light',
                         align: 'right',
                         verticalAlign: 'top',
                         x: -60,
@@ -264,7 +294,7 @@ $(function () {
                     to: 7.5,
                     color: 'rgba(71, 114, 252, 0.1)',
                     label: {
-                        text: '(Moderate)',
+                        text: 'Moderate',
                         align: 'right',
                         verticalAlign: 'top',
                         x: -60,
@@ -275,7 +305,7 @@ $(function () {
                     to: 15,
                     color: 'rgba(64, 63, 199, 0.1)',
                     label: {
-                        text: '(Heavy)',
+                        text: 'Heavy',
                         align: 'right',
                         verticalAlign: 'top',
                         x: -60,
@@ -288,11 +318,11 @@ $(function () {
                     to: 30,
                     color: 'rgba(254, 195, 75, 0.1)',
                     label: {
-                        text: '(Intense)',
+                        text: 'Intense',
                         align: 'right',
                         verticalAlign: 'top',
-                        x: -60,
-                        y: 10
+                        x: 60,
+                        y: -10
                     }""")
 
         chart_file.write("""
@@ -301,10 +331,10 @@ $(function () {
                     to: 9999,
                     color: 'rgba(254, 90, 63, 0.1)',
                     label: {
-                        text: '(Torrential)',
+                        text: 'Torrential',
                         align: 'right',
                         verticalAlign: 'top',
-                        x: -60,
+                        x: 60,
                         y: 10
                     }""")
 
