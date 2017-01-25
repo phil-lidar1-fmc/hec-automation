@@ -546,6 +546,9 @@ exists...')
         else:
             disc_gages[disc_gage]['tidal_correct'] = False
 
+        # Initialize water level offset
+        disc_gages[disc_gage]['waterlevel_offset'] = 0.
+
     # Get water level offset for each discharge gage
     _logger.info('Getting water level offset for each discharge gage...')
     if 'WaterLevelOffset' in conf['HEC-HMS']:
@@ -564,9 +567,6 @@ exists...')
             _logger.error(
                 'Error parsing "WaterLevelOffset" from conf file! Exiting.')
             exit(1)
-    else:
-        for disc_gage in disc_gages.keys():
-            disc_gages[disc_gage]['waterlevel_offset'] = 0.
 
     # Get h-q curve eqn info for each discharge gage
     _logger.info('Getting h-q curve eqn info for each discharge gage...')
