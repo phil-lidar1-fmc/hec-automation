@@ -48,7 +48,7 @@ print(os.path.basename(__file__) + ': v' + _version)
 np.seterr(all='raise')
 _logger = logging.getLogger()
 _SIM_PAST_HOURS = timedelta(hours=36)
-_SIM_FUTURE_HOURS = timedelta(hours=12)
+_SIM_FUTURE_HOURS = timedelta(hours=24)
 _RAIN_PAST_HOURS = timedelta(hours=12)
 _HIST_DAYS = timedelta(days=7)
 _BF_HT_DIFF = 0.020  # meters
