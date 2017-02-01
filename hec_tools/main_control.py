@@ -530,15 +530,24 @@ exists...')
         _logger.debug("conf['HEC-HMS'][disc_gage]: %s",
                       conf['HEC-HMS'][disc_gage])
 
+        # Get dev id and data type
         try:
-            disc_gages[disc_gage] = {
-                'sensor': ASTISensor(int(conf['HEC-HMS'][disc_gage]))
-            }
-            disc_gages[disc_gage]['sensor'].data_type('waterlevel_msl')
+            if '|' in conf['HEC-HMS'][disc_gage]:
+                tokens = conf['HEC-HMS'][disc_gage].split('|')
+                dev_id = int(tokens[0])
+                data_type = tokens[1]
+            else:
+                dev_id = int(conf['HEC-HMS'][disc_gage])
+                data_type = 'waterlevel_msl'
         except Exception:
             _logger.exception('Error getting discharge info!')
             _logger.error('Exiting.')
             exit(1)
+
+        disc_gages[disc_gage] = {
+            'sensor': ASTISensor(dev_id)
+        }
+        disc_gages[disc_gage]['sensor'].data_type(data_type)
 
         # Check if tidal correction is enabled for this gage
         if disc_gage in conf['HEC-HMS']['TidalCorrection']:
