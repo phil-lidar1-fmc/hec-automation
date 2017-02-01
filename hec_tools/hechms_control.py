@@ -5,7 +5,7 @@ All rights reserved.
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
- any later version.
+any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -94,6 +94,12 @@ def hechms_control(current_time, main_config, hechms_config):
         _logger.info('Discharge gage: %s Location: %s', disc_gage,
                      disc_gage_info['sensor'].meta()['location'])
 
+        # If actual water level data is not available
+        if not disc_gage_info['sensor'].data():
+            # No actual water level data available
+            _logger.info('No actual water level data available. Skipping...')
+            continue
+
         # Read HEC-HMS output
         _logger.info('Reading HEC-HMS output...')
         _read_hechms_output(disc_gage, disc_gage_info)
@@ -106,28 +112,25 @@ def hechms_control(current_time, main_config, hechms_config):
             (_PSERIES, _POSERIES): 0.
         }
 
-        # If actual water level data is available
-        if disc_gage_info['sensor'].data():
+        # Run linear regression on predicted water level
+        _logger.info(
+            'Running linear regression on predicted water level...')
+        try:
+            _run_linear_regress_with_outlier_removal(disc_gage_info)
+        except Exception:
+            _logger.exception('Error running linear regression!')
 
-            # Run linear regression on predicted water level
-            _logger.info(
-                'Running linear regression on predicted water level...')
-            try:
-                _run_linear_regress_with_outlier_removal(disc_gage_info)
-            except Exception:
-                _logger.exception('Error running linear regression!')
+        # Check if tidal correction is needed
+        if disc_gage_info['tidal_correct']:
+            _logger.info('Applying tidal correction...')
+            _apply_tidal_correction(disc_gage_info)
+            disc_gage_info['offsets'][(_TSERIES, _TOSERIES)] = 0.
+            disc_gage_info['offsets'][(_PTSERIES, _PTOSERIES)] = 0.
 
-            # Check if tidal correction is needed
-            if disc_gage_info['tidal_correct']:
-                _logger.info('Applying tidal correction...')
-                _apply_tidal_correction(disc_gage_info)
-                disc_gage_info['offsets'][(_TSERIES, _TOSERIES)] = 0.
-                disc_gage_info['offsets'][(_PTSERIES, _PTOSERIES)] = 0.
-
-            # Get and apply predicted offsets from actual
-            _logger.info('Getting and applying predicted offsets from \
+        # Get and apply predicted offsets from actual
+        _logger.info('Getting and applying predicted offsets from \
 actual...')
-            _get_predicted_offset(disc_gage_info)
+        _get_predicted_offset(disc_gage_info)
 
         # Get correct set of data series
         _logger.info('Getting correct set of data series for chart...')

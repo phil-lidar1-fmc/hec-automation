@@ -5,7 +5,7 @@ All rights reserved.
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
- any later version.
+any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -112,8 +112,6 @@ def _parse_arguments():
 
     # Parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--version', action='version',
-                        version=_version)
     parser.add_argument('-v', '--verbose', action='count')
     parser.add_argument('conf_file')
     args = parser.parse_args()

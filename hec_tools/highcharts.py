@@ -5,7 +5,7 @@ All rights reserved.
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
- any later version.
+any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -36,28 +36,36 @@ def write_chart(current_time, start_time, end_time,
     # Set global parameters
     global _current_time
     _current_time = current_time
+
     global _start_time
     _start_time = start_time
+
     global _end_time
     _end_time = end_time
+
     global _release_trans
     _release_trans = release_trans
+
     global _disc_gage_info
     _disc_gage_info = disc_gage_info
+
     global _MAIN_CONFIG
     _MAIN_CONFIG = main_config
+
     global _HECHMS_CONFIG
     _HECHMS_CONFIG = hechms_config
+
     global _location
     _location = _disc_gage_info['sensor'].meta()['location']
+
     global _ismsl
-    _ismsl = '(non-MSL)'
+    _ismsl = 'non-MSL'
     if 'msl' in _disc_gage_info['sensor'].data_type():
-        _ismsl = '(MSL)'
+        _ismsl = 'MSL'
 
     # Get chart file path
     chart_fp = op.join(_MAIN_CONFIG.charts_dir,
-                       _sanitize(_location))
+                       _sanitize(_location) + '_' + _ismsl)
 
     # If live, write the release and the debug chart
     write_html(chart_fp + '.html')
@@ -79,7 +87,7 @@ def write_html(chart_fp, testing=False, show_old_predicted=False):
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>""")
 
-        chart_file.write(_location + ' ' + _ismsl + ' @' +
+        chart_file.write(_location + ' (' + _ismsl + ') @' +
                          str(_current_time))
 
         chart_file.write("""</title>
@@ -142,7 +150,7 @@ $(function () {
             title: {
                 text: """)
 
-        chart_file.write("'" + _location + ' ' + _ismsl + ' @' +
+        chart_file.write("'" + _location + ' (' + _ismsl + ') @' +
                          str(_current_time) + "'")
 
         chart_file.write("""
