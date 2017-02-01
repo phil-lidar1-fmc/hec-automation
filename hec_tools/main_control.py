@@ -552,6 +552,11 @@ exists...')
         # Initialize water level offset
         disc_gages[disc_gage]['waterlevel_offset'] = 0.
 
+        # Initialize chart options
+        disc_gages[disc_gage]['chart_options'] = {
+            'forecast_hours': timedelta(hours=12)
+        }
+
     # Get h-q curve eqn info for each discharge gage
     _logger.info('Getting h-q curve eqn info for each discharge gage...')
     try:
@@ -637,7 +642,35 @@ Exiting.')
 Exiting.')
             exit(1)
 
-    # Get predicted series priority for each discharge gage
+    # Get chart options for each discharge gage
+    _logger.info('Getting chart options for each discharge gage...')
+    if 'ChartOptions' in conf['HEC-HMS']:
+        try:
+            for chart_options in conf['HEC-HMS']['ChartOptions']:
+
+                tokens = chart_options.split('|')
+
+                disc_gage = tokens[0]
+                _logger.debug('disc_gage: %s', disc_gage)
+
+                for t in tokens[1:]:
+                    k, v = t.split('>')
+                    if k == 'FH':
+                        disc_gages[disc_gage]['chart_options']\
+                            ['forecast_hours'] = timedelta(hours=int(v))
+                    elif k == 'MN':
+                        disc_gages[disc_gage]['chart_options']\
+                            ['min_waterlevel'] = float(v)
+                    elif k == 'MX':
+                        disc_gages[disc_gage]['chart_options']\
+                            ['max_waterlevel'] = float(v)
+
+        except Exception:
+            _logger.exception('Error parsing "ChartOptions" from conf file! \
+Exiting.')
+            exit(1)
+
+        # Get predicted series priority for each discharge gage
     _logger.info('Getting predicted series priority for each discharge \
 gage...')
     for pseries_prio in conf['HEC-HMS']['PredictSeriesPrio']:
