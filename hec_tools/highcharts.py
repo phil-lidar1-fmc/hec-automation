@@ -489,7 +489,7 @@ $(function () {
 def _data_writer(data, write_upto=None):
     buf = []
     for t, v in sorted(data.viewitems()):
-        if write_upto and t <= write_upto:
+        if (write_upto and _current_time <= t <= write_upto) or not write_upto:
             # Format time
             line = '[' + _utc_format(t) + ', '
             # Format v

@@ -58,7 +58,7 @@ TidalCorrection=CDO_DISC;
 PredictSeriesPrio=CDO_DISC|_PTOSERIES|_PLOSERIES|_POSERIES;
 SpillingLevels=CDO_DISC|11.09|11.08;
 WaterLevelOffset=CDO_DISC|0.;
-#ChartOptions=CDO_DISC|FH=12|MN=0.|MX=5.;
+ChartOptions=CDO_DISC|FH>12|MN>0.|MX>5.;
 
 
 [ HEC-RAS - CDO_DISC ]

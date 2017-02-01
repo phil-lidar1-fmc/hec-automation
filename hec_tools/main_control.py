@@ -654,7 +654,7 @@ Exiting.')
                 _logger.debug('disc_gage: %s', disc_gage)
 
                 for t in tokens[1:]:
-                    k, v = t.split('=')
+                    k, v = t.split('>')
                     if k == 'FH':
                         disc_gages[disc_gage]['chart_options']\
                             ['forecast_hours'] = timedelta(hours=int(v))
