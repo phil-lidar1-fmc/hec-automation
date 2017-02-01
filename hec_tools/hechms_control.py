@@ -787,7 +787,7 @@ def _export_json(disc_gage_info, release_trans):
 
     json_fn = op.join(_MAIN_CONFIG.json_dir,
                       _sanitize(disc_gage_info['sensor'].meta()['location']) +
-                      _ + ismsl + '.json')
+                      '_' + ismsl + '.json')
 
     data = {}
     for t, w in sorted(disc_gage_info['predicted']['waterlevel']
