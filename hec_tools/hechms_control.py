@@ -797,7 +797,7 @@ def _export_predicted_json(disc_gage_info, release_trans):
 
     # Import previous predicted json
     _ismsl = 'non-MSL'
-    if 'msl' in _disc_gage_info['sensor'].data_type():
+    if 'msl' in disc_gage_info['sensor'].data_type():
         _ismsl = 'MSL'
 
     json_fn = op.join(_MAIN_CONFIG.json_dir,
