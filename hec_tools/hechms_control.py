@@ -141,8 +141,8 @@ actual...')
         _export_json(disc_gage_info, release_trans)
 
         # Import predicted json file
-        _logger.info('Importing predicted JSON file...')
-        _import_predicted_json(disc_gage_info)
+        # _logger.info('Importing predicted JSON file...')
+        # _import_predicted_json(disc_gage_info)
 
         # Export predicted json file
         _logger.info('Exporting predicted JSON file...')
