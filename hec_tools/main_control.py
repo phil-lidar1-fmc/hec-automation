@@ -2,25 +2,18 @@
 Copyright (c) 2013, Kenneth Langga (klangga@gmail.com)
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
 
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 from asti_sensor import ASTISensor
@@ -38,8 +31,6 @@ import subprocess
 import sys
 import time
 
-_version = '2.25'
-print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
 _LOG_LEVEL = logging.DEBUG
 _CONS_LOG_LEVEL = logging.INFO
@@ -47,8 +38,6 @@ _FILE_LOG_LEVEL = logging.DEBUG
 _MAIN_CONFIG = None
 _HECHMS_CONFIG = None
 _HECRAS_CONFIG = None
-# _MAX_ERRORS = 30
-_cur_errors = 0
 
 # Add required binaries default paths to PATH environment variable
 default_paths = ['C:\\OSGeo4W64\\bin',
@@ -123,8 +112,6 @@ def _parse_arguments():
 
     # Parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--version', action='version',
-                        version=_version)
     parser.add_argument('-v', '--verbose', action='count')
     parser.add_argument('conf_file')
     args = parser.parse_args()
@@ -530,15 +517,31 @@ exists...')
         _logger.debug("conf['HEC-HMS'][disc_gage]: %s",
                       conf['HEC-HMS'][disc_gage])
 
+        # Get dev id and data type
         try:
-            disc_gages[disc_gage] = {
-                'sensor': ASTISensor(int(conf['HEC-HMS'][disc_gage]))
-            }
-            disc_gages[disc_gage]['sensor'].data_type('waterlevel_msl')
+            if '|' in conf['HEC-HMS'][disc_gage]:
+                tokens = conf['HEC-HMS'][disc_gage].split('|')
+                dev_id = int(tokens[0])
+                if tokens[1] == 'MSL':
+                    data_type = 'waterlevel_msl'
+                elif tokens[1] == 'NON-MSL':
+                    data_type = 'waterlevel'
+                else:
+                    _logger.error('Unrecognized option! (tokens: %s)', tokens)
+                    _logger.error('Exiting.')
+                    exit(1)
+            else:
+                dev_id = int(conf['HEC-HMS'][disc_gage])
+                data_type = 'waterlevel_msl'
         except Exception:
             _logger.exception('Error getting discharge info!')
             _logger.error('Exiting.')
             exit(1)
+
+        disc_gages[disc_gage] = {
+            'sensor': ASTISensor(dev_id)
+        }
+        disc_gages[disc_gage]['sensor'].data_type(data_type)
 
         # Check if tidal correction is enabled for this gage
         if disc_gage in conf['HEC-HMS']['TidalCorrection']:

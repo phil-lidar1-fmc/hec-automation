@@ -2,25 +2,18 @@
 Copyright (c) 2013, Kenneth Langga (klangga@gmail.com)
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
 
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 from pprint import pformat
@@ -28,14 +21,7 @@ import os
 import os.path as op
 import logging
 
-_version = '2.9'
-print(os.path.basename(__file__) + ': v' + _version)
 _logger = logging.getLogger()
-_rainfall_palettes = {1: '34,102,102,1',
-                      3: '46,66,114,.9',
-                      6: '64,48,117,.8',
-                      12: '88,42,114,.7',
-                      24: '136,45,97,.6'}
 
 
 def _sanitize(t):
@@ -50,28 +36,36 @@ def write_chart(current_time, start_time, end_time,
     # Set global parameters
     global _current_time
     _current_time = current_time
+
     global _start_time
     _start_time = start_time
+
     global _end_time
     _end_time = end_time
+
     global _release_trans
     _release_trans = release_trans
+
     global _disc_gage_info
     _disc_gage_info = disc_gage_info
+
     global _MAIN_CONFIG
     _MAIN_CONFIG = main_config
+
     global _HECHMS_CONFIG
     _HECHMS_CONFIG = hechms_config
+
     global _location
     _location = _disc_gage_info['sensor'].meta()['location']
+
     global _ismsl
-    _ismsl = '(non-MSL)'
+    _ismsl = 'non-MSL'
     if 'msl' in _disc_gage_info['sensor'].data_type():
-        _ismsl = '(MSL)'
+        _ismsl = 'MSL'
 
     # Get chart file path
     chart_fp = op.join(_MAIN_CONFIG.charts_dir,
-                       _sanitize(_location))
+                       _sanitize(_location) + '_' + _ismsl)
 
     # If live, write the release and the debug chart
     write_html(chart_fp + '.html')
@@ -93,7 +87,7 @@ def write_html(chart_fp, testing=False, show_old_predicted=False):
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>""")
 
-        chart_file.write(_location + ' ' + _ismsl + ' @' +
+        chart_file.write(_location + ' (' + _ismsl + ') @' +
                          str(_current_time))
 
         chart_file.write("""</title>
@@ -156,7 +150,7 @@ $(function () {
             title: {
                 text: """)
 
-        chart_file.write("'" + _location + ' ' + _ismsl + ' @' +
+        chart_file.write("'" + _location + ' (' + _ismsl + ') @' +
                          str(_current_time) + "'")
 
         chart_file.write("""

@@ -2,25 +2,18 @@
 Copyright (c) 2013, Kenneth Langga (klangga@gmail.com)
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
 
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 from datetime import timedelta, datetime
@@ -43,16 +36,11 @@ import re
 import scipy.stats
 import subprocess
 
-_version = '2.20'
-print(os.path.basename(__file__) + ': v' + _version)
 np.seterr(all='raise')
 _logger = logging.getLogger()
-_SIM_PAST_HOURS = timedelta(hours=36)
+_SIM_PAST_HOURS = timedelta(hours=48)
 _SIM_FUTURE_HOURS = timedelta(hours=24)
-_RAIN_PAST_HOURS = timedelta(hours=12)
 _HIST_DAYS = timedelta(days=7)
-_BF_HT_DIFF = 0.020  # meters
-_BF_KERN_SIZE = 7  # samples
 _ASERIES = 'Actual'
 _PSERIES = 'HEC-HMS'
 _POSERIES = _PSERIES + ' + offset'
@@ -106,6 +94,12 @@ def hechms_control(current_time, main_config, hechms_config):
         _logger.info('Discharge gage: %s Location: %s', disc_gage,
                      disc_gage_info['sensor'].meta()['location'])
 
+        # If actual water level data is not available
+        if not disc_gage_info['sensor'].data():
+            # No actual water level data available
+            _logger.info('No actual water level data available. Skipping...')
+            continue
+
         # Read HEC-HMS output
         _logger.info('Reading HEC-HMS output...')
         _read_hechms_output(disc_gage, disc_gage_info)
@@ -118,28 +112,25 @@ def hechms_control(current_time, main_config, hechms_config):
             (_PSERIES, _POSERIES): 0.
         }
 
-        # If actual water level data is available
-        if disc_gage_info['sensor'].data():
+        # Run linear regression on predicted water level
+        _logger.info(
+            'Running linear regression on predicted water level...')
+        try:
+            _run_linear_regress_with_outlier_removal(disc_gage_info)
+        except Exception:
+            _logger.exception('Error running linear regression!')
 
-            # Run linear regression on predicted water level
-            _logger.info(
-                'Running linear regression on predicted water level...')
-            try:
-                _run_linear_regress_with_outlier_removal(disc_gage_info)
-            except Exception:
-                _logger.exception('Error running linear regression!')
+        # Check if tidal correction is needed
+        if disc_gage_info['tidal_correct']:
+            _logger.info('Applying tidal correction...')
+            _apply_tidal_correction(disc_gage_info)
+            disc_gage_info['offsets'][(_TSERIES, _TOSERIES)] = 0.
+            disc_gage_info['offsets'][(_PTSERIES, _PTOSERIES)] = 0.
 
-            # Check if tidal correction is needed
-            if disc_gage_info['tidal_correct']:
-                _logger.info('Applying tidal correction...')
-                _apply_tidal_correction(disc_gage_info)
-                disc_gage_info['offsets'][(_TSERIES, _TOSERIES)] = 0.
-                disc_gage_info['offsets'][(_PTSERIES, _PTOSERIES)] = 0.
-
-            # Get and apply predicted offsets from actual
-            _logger.info('Getting and applying predicted offsets from \
+        # Get and apply predicted offsets from actual
+        _logger.info('Getting and applying predicted offsets from \
 actual...')
-            _get_predicted_offset(disc_gage_info)
+        _get_predicted_offset(disc_gage_info)
 
         # Get correct set of data series
         _logger.info('Getting correct set of data series for chart...')
@@ -150,8 +141,8 @@ actual...')
         _export_json(disc_gage_info, release_trans)
 
         # Import predicted json file
-        _logger.info('Importing predicted JSON file...')
-        _import_predicted_json(disc_gage_info)
+        # _logger.info('Importing predicted JSON file...')
+        # _import_predicted_json(disc_gage_info)
 
         # Export predicted json file
         _logger.info('Exporting predicted JSON file...')
@@ -204,7 +195,6 @@ level)...')
     global _hist_start
     _hist_start = _current_time - _HIST_DAYS
     _logger.info('_hist_start: %s', _hist_start)
-    _logger.info('_RAIN_PAST_HOURS: %s', _RAIN_PAST_HOURS)
 
 
 def _get_rainfall_data_in_mm():
@@ -791,9 +781,13 @@ def _sanitize(t):
 
 def _export_json(disc_gage_info, release_trans):
 
+    ismsl = 'non-msl'
+    if 'msl' in disc_gage_info['sensor'].data_type():
+        ismsl = 'msl'
+
     json_fn = op.join(_MAIN_CONFIG.json_dir,
                       _sanitize(disc_gage_info['sensor'].meta()['location']) +
-                      '.json')
+                      '_' + ismsl + '.json')
 
     data = {}
     for t, w in sorted(disc_gage_info['predicted']['waterlevel']
@@ -803,13 +797,17 @@ def _export_json(disc_gage_info, release_trans):
     json.dump(data, open(json_fn, 'w'), sort_keys=True, indent=4)
 
 
-def _import_predicted_json(disc_gage_info):
+def _export_predicted_json(disc_gage_info, release_trans):
+
+    # Import previous predicted json
+    ismsl = 'non-msl'
+    if 'msl' in disc_gage_info['sensor'].data_type():
+        ismsl = 'msl'
 
     json_fn = op.join(_MAIN_CONFIG.json_dir,
                       _sanitize(disc_gage_info['sensor'].meta()['location']) +
-                      '_predicted.json')
+                      '_' + ismsl + '_predicted.json')
 
-    # disc_wl_data[_OPSERIES] = {}
     disc_gage_info['predicted']['waterlevel'][_OPSERIES] = {}
     if os.path.isfile(json_fn):
         data = json.load(open(json_fn, 'r'))
@@ -817,9 +815,7 @@ def _import_predicted_json(disc_gage_info):
             dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
             disc_gage_info['predicted']['waterlevel'][_OPSERIES][dt] = wl
 
-
-def _export_predicted_json(disc_gage_info, release_trans):
-
+    # Export predicted json
     wl = disc_gage_info['predicted']['waterlevel'][release_trans['Predicted']][
         _current_time + timedelta(hours=1)]
     disc_gage_info['predicted']['waterlevel'][_OPSERIES][
@@ -829,10 +825,6 @@ def _export_predicted_json(disc_gage_info, release_trans):
     for dt, wl in disc_gage_info['predicted']['waterlevel'][_OPSERIES].items():
         if dt >= _current_time - _HIST_DAYS:
             data[str(dt)] = wl
-
-    json_fn = op.join(_MAIN_CONFIG.json_dir,
-                      _sanitize(disc_gage_info['sensor'].meta()['location']) +
-                      '_predicted.json')
 
     json.dump(data, open(json_fn, 'w'), sort_keys=True, indent=4)
 
