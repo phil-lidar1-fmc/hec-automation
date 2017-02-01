@@ -217,10 +217,19 @@ $(function () {
                     }
                 }""")
 
+        if 'min_waterlevel' in _disc_gage_info['chart_options']:
+            chart_file.write("""
+                , min: """ +
+                             str(_disc_gage_info['chart_options']['min_waterlevel']))
+
+        if 'max_waterlevel' in _disc_gage_info['chart_options']:
+            chart_file.write("""
+                , max: """ +
+                             str(_disc_gage_info['chart_options']['max_waterlevel']))
+
         if 'spilling_levels' in _disc_gage_info:
             chart_file.write("""
-                ,
-                plotLines: [{
+                , plotLines: [{
                     color: 'green',
                     dashStyle: 'longdashdot',
                     width: 2,
@@ -356,17 +365,17 @@ $(function () {
             }, {""")
 
         # Write predicted waterlevel data
-        _waterlevel_data = _disc_gage_info['predicted']['waterlevel']
         if not testing:
             counter = len(_release_trans)
             if not show_old_predicted:
                 counter -= 1
         else:
-            counter = len(_waterlevel_data)
+            counter = len(_disc_gage_info['predicted']['waterlevel'])
 
         # _logger.debug('testing = %s', testing)
 
-        for series_key, data in sorted(_waterlevel_data.viewitems()):
+        for series_key, data in \
+                sorted(_disc_gage_info['predicted']['waterlevel'].viewitems()):
 
             # _logger.debug('series_key = %s', series_key)
 
@@ -397,7 +406,10 @@ $(function () {
 
                     if (not testing and
                             _release_trans['Predicted'] == series_key):
-                        chart_file.write(_data_writer(data, False))
+                        wu = _current_time + \
+                            _disc_gage_info['chart_options']['forecast_hours']
+                        chart_file.write(_data_writer(data,
+                                                      write_upto=wu))
                     else:
                         chart_file.write(_data_writer(data))
 
@@ -474,10 +486,10 @@ $(function () {
 </html>""")
 
 
-def _data_writer(data, write_all=True):
+def _data_writer(data, write_upto=None):
     buf = []
     for t, v in sorted(data.viewitems()):
-        if (not write_all and t >= _current_time) or write_all:
+        if write_upto and t <= write_upto:
             # Format time
             line = '[' + _utc_format(t) + ', '
             # Format v
