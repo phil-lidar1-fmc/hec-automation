@@ -781,9 +781,13 @@ def _sanitize(t):
 
 def _export_json(disc_gage_info, release_trans):
 
+    ismsl = 'non-msl'
+    if 'msl' in disc_gage_info['sensor'].data_type():
+        ismsl = 'msl'
+
     json_fn = op.join(_MAIN_CONFIG.json_dir,
                       _sanitize(disc_gage_info['sensor'].meta()['location']) +
-                      '.json')
+                      _ + ismsl + '.json')
 
     data = {}
     for t, w in sorted(disc_gage_info['predicted']['waterlevel']
@@ -796,13 +800,13 @@ def _export_json(disc_gage_info, release_trans):
 def _export_predicted_json(disc_gage_info, release_trans):
 
     # Import previous predicted json
-    _ismsl = 'non-MSL'
+    ismsl = 'non-msl'
     if 'msl' in disc_gage_info['sensor'].data_type():
-        _ismsl = 'MSL'
+        ismsl = 'msl'
 
     json_fn = op.join(_MAIN_CONFIG.json_dir,
                       _sanitize(disc_gage_info['sensor'].meta()['location']) +
-                      '_' + _ismsl + '_predicted.json')
+                      '_' + ismsl + '_predicted.json')
 
     disc_gage_info['predicted']['waterlevel'][_OPSERIES] = {}
     if os.path.isfile(json_fn):
