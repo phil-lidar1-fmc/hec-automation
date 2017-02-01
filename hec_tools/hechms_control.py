@@ -793,13 +793,17 @@ def _export_json(disc_gage_info, release_trans):
     json.dump(data, open(json_fn, 'w'), sort_keys=True, indent=4)
 
 
-def _import_predicted_json(disc_gage_info):
+def _export_predicted_json(disc_gage_info, release_trans):
+
+    # Import previous predicted json
+    _ismsl = 'non-MSL'
+    if 'msl' in _disc_gage_info['sensor'].data_type():
+        _ismsl = 'MSL'
 
     json_fn = op.join(_MAIN_CONFIG.json_dir,
                       _sanitize(disc_gage_info['sensor'].meta()['location']) +
-                      '_predicted.json')
+                      '_' + _ismsl + '_predicted.json')
 
-    # disc_wl_data[_OPSERIES] = {}
     disc_gage_info['predicted']['waterlevel'][_OPSERIES] = {}
     if os.path.isfile(json_fn):
         data = json.load(open(json_fn, 'r'))
@@ -807,9 +811,7 @@ def _import_predicted_json(disc_gage_info):
             dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
             disc_gage_info['predicted']['waterlevel'][_OPSERIES][dt] = wl
 
-
-def _export_predicted_json(disc_gage_info, release_trans):
-
+    # Export predicted json
     wl = disc_gage_info['predicted']['waterlevel'][release_trans['Predicted']][
         _current_time + timedelta(hours=1)]
     disc_gage_info['predicted']['waterlevel'][_OPSERIES][
@@ -819,10 +821,6 @@ def _export_predicted_json(disc_gage_info, release_trans):
     for dt, wl in disc_gage_info['predicted']['waterlevel'][_OPSERIES].items():
         if dt >= _current_time - _HIST_DAYS:
             data[str(dt)] = wl
-
-    json_fn = op.join(_MAIN_CONFIG.json_dir,
-                      _sanitize(disc_gage_info['sensor'].meta()['location']) +
-                      '_predicted.json')
 
     json.dump(data, open(json_fn, 'w'), sort_keys=True, indent=4)
 
