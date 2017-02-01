@@ -134,8 +134,6 @@ if __name__ == '__main__':
 
     # Parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--version', action='version',
-                        version=_version)
     parser.add_argument('-v', '--verbose', action='count')
     parser.add_argument('action', choices=['read', 'write'])
     # parser.add_argument('-s', '--source', choices=['csv', 'dss'])

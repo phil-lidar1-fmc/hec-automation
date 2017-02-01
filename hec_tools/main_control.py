@@ -522,7 +522,14 @@ exists...')
             if '|' in conf['HEC-HMS'][disc_gage]:
                 tokens = conf['HEC-HMS'][disc_gage].split('|')
                 dev_id = int(tokens[0])
-                data_type = tokens[1]
+                if tokens[1] == 'MSL':
+                    data_type = 'waterlevel_msl'
+                elif tokens[1] == 'NON-MSL':
+                    data_type = 'waterlevel'
+                else:
+                    _logger.error('Unrecognized option! (tokens: %s)', tokens)
+                    _logger.error('Exiting.')
+                    exit(1)
             else:
                 dev_id = int(conf['HEC-HMS'][disc_gage])
                 data_type = 'waterlevel_msl'
