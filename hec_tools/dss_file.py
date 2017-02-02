@@ -102,8 +102,15 @@ class DSSFile:
 
     def dss_handler(self, action, input_):
 
-        # Dump input data to json
+        # Cleanup temporary files if they exist
         input_fp = os.path.abspath('dss_handler.in')
+        output_fp = os.path.abspath('dss_handler.out')
+
+        for f in [input_fp, output_fp]:
+            if os.path.isfile(f):
+                os.remove(f)
+
+        # Dump input data to json
         pickle.dump(input_, open(input_fp, 'wb'))
 
         # Get batch file path
@@ -137,7 +144,6 @@ class DSSFile:
         os.remove(input_fp)
 
         # Get output data
-        output_fp = os.path.abspath('dss_handler.out')
         output = None
         if os.path.isfile(output_fp):
             output = pickle.load(open(output_fp, 'rb'))

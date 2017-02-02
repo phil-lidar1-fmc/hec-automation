@@ -102,7 +102,9 @@ def _setup_logging(args):
     ch.setFormatter(formatter)
     _logger.addHandler(ch)
 
-    fh = logging.FileHandler(os.path.join('log', 'main_control.log'), mode='w')
+    fh = logging.FileHandler(os.path.join('log',
+                                          os.splitext(args.conf_file)[
+                                              0].lower() + '.log'), mode='w')
     fh.setLevel(_FILE_LOG_LEVEL)
     fh.setFormatter(formatter)
     _logger.addHandler(fh)
