@@ -103,7 +103,7 @@ def _setup_logging(args):
     _logger.addHandler(ch)
 
     fh = logging.FileHandler(os.path.join('log',
-                                          os.splitext(args.conf_file)[
+                                          os.path.splitext(args.conf_file)[
                                               0].lower() + '.log'), mode='w')
     fh.setLevel(_FILE_LOG_LEVEL)
     fh.setFormatter(formatter)
