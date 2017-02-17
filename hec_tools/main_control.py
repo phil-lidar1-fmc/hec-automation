@@ -1047,18 +1047,15 @@ if __name__ == '__main__':
                     '\\', '/').replace('C:', 'c') + '/'
             subprocess.check_call(['rsync.exe', '-rtiPS', install_dir_unix +
                                    'charts/*.html',
-                                   'admin@website.dmz.dream.upd.edu.\
-ph:/srv/www/www.dream.upd.edu.ph/hectools/charts/'],
+                                   'admin@172.168.200.203:/srv/www/pagasa-common/charts/'],
                                   shell=True)
             subprocess.check_call(['rsync.exe', '-rtiPS', install_dir_unix +
                                    'json/*.json',
-                                   'admin@website.dmz.dream.upd.edu.\
-ph:/srv/www/www.dream.upd.edu.ph/hectools/json/'],
+                                   'admin@172.168.200.203:/srv/www/pagasa-common/json/'],
                                   shell=True)
             subprocess.check_call(['rsync.exe', '-rtiPS', install_dir_unix +
                                    'kmz/',
-                                   'admin@website.dmz.dream.upd.edu.\
-ph:/srv/www/www.dream.upd.edu.ph/hectools/kmz/'],
+                                   'admin@172.168.200.203:/srv/www/pagasa-common/kmz/'],
                                   shell=True)
         except subprocess.CalledProcessError:
             import traceback
